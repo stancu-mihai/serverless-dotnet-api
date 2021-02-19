@@ -11,6 +11,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Amazon.DynamoDBv2;
+using System.Text.Json;
+using serverless_dotnet_api.Persistence;
+using serverless_dotnet_api.Services;
 
 namespace serverless_dotnet_api
 {
@@ -27,7 +31,11 @@ namespace serverless_dotnet_api
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions(x => { x.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase; });
+            services.AddAWSService<IAmazonDynamoDB>(Configuration.GetAWSOptions("Dynamodb"));
+            services.AddSingleton<IProductReviewRepository, ProductReviewRepository>();
+            services.AddSingleton<IProductReviewService, ProductReviewService>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "serverless_dotnet_api", Version = "v1" });
