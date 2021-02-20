@@ -1,6 +1,6 @@
 using System;
 
-namespace serverless_dotnet_api
+namespace ServerlessDotnetApi
 {
     public class WeatherForecast
     {

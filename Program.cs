@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace serverless_dotnet_api
+namespace ServerlessDotnetApi
 {
     public class Program
     {

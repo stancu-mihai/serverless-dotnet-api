@@ -32,9 +32,11 @@ Base path should be ```https://localhost:5001```, so test something like ```http
 
 ## History (resouces used)
 ```dotnet new webapi```
-Added DynamoDB as per http://blog.romanpavlov.me/net-core-app-with-aws-dynamo-db and its github repo.
-http://blog.romanpavlov.me/net-core-app-with-aws-dynamo-db/
+Added DynamoDB and project structure from http://blog.romanpavlov.me/net-core-app-with-aws-dynamo-db and its github repo: https://github.com/roman-pavlov/dynamo-db-demo
+Learned how to use local dynamodb from:
 https://www.codeproject.com/Articles/5273030/ASP-NET-Core-Web-API-plus-DynamoDB-Locally
+Since this project has a different structure than ```dotnet new serverless.AspNetCoreWebAPI```, we have to update serverless.yml to take this into account. Used:
+https://dev.to/schwamster/deploy-a-net-core-web-api-with-aws-lambda-and-the-serverless-framework-3762
 
 ## File structure
 - ```Properties``` folder is used by Visual Studio for launching

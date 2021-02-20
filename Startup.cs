@@ -13,10 +13,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Amazon.DynamoDBv2;
 using System.Text.Json;
-using serverless_dotnet_api.Persistence;
-using serverless_dotnet_api.Services;
+using ServerlessDotnetApi.Persistence;
+using ServerlessDotnetApi.Services;
 
-namespace serverless_dotnet_api
+namespace ServerlessDotnetApi
 {
     public class Startup
     {
@@ -38,7 +38,7 @@ namespace serverless_dotnet_api
             services.AddSingleton<IProductReviewService, ProductReviewService>();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "serverless_dotnet_api", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ServerlessDotnetApi", Version = "v1" });
             });
         }
 
@@ -49,7 +49,7 @@ namespace serverless_dotnet_api
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "serverless_dotnet_api v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ServerlessDotnetApi v1"));
             }
 
             app.UseHttpsRedirection();

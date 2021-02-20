@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 
-namespace serverless_dotnet_api.Persistence
+namespace ServerlessDotnetApi.Persistence
 {
     public class ProductReviewRepository : IProductReviewRepository
     {

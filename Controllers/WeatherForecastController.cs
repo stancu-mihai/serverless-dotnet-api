@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace serverless_dotnet_api.Controllers
+namespace ServerlessDotnetApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]

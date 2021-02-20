@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using serverless_dotnet_api.Models;
-using serverless_dotnet_api.Persistence;
+using ServerlessDotnetApi.Models;
+using ServerlessDotnetApi.Persistence;
 
-namespace serverless_dotnet_api.Services
+namespace ServerlessDotnetApi.Services
 {
     public class ProductReviewService : IProductReviewService
     {

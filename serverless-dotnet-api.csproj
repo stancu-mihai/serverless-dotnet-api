@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>serverless_dotnet_api</RootNamespace>
+    <RootNamespace>ServerlessDotnetApi</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using serverless_dotnet_api.Models;
-using serverless_dotnet_api.Services;
+using ServerlessDotnetApi.Models;
+using ServerlessDotnetApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace serverless_dotnet_api.Controllers
+namespace ServerlessDotnetApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]

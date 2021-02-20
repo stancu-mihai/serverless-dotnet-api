@@ -1,6 +1,6 @@
 using System;
 
-namespace serverless_dotnet_api.Models
+namespace ServerlessDotnetApi.Models
 {
     public class ProductReviewRequest
     {

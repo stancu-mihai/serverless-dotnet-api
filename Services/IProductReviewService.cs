@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using serverless_dotnet_api.Models;
+using ServerlessDotnetApi.Models;
 
-namespace serverless_dotnet_api.Services
+namespace ServerlessDotnetApi.Services
 {
     public interface IProductReviewService
     {

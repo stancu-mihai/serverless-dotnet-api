@@ -1,8 +1,8 @@
 using System;
 using Amazon.DynamoDBv2.DataModel;
-using serverless_dotnet_api.Models;
+using ServerlessDotnetApi.Models;
 
-namespace serverless_dotnet_api.Persistence
+namespace ServerlessDotnetApi.Persistence
 {
     [DynamoDBTable("ProductReview")]
     public class ProductReviewItem
