@@ -13,6 +13,7 @@ Starter for REST API project:
 - C# Extension for VSCode (MSBuild required for building - might require Visual Studio)
 
 ## How to run:
+### Offline
 - ```npm install``` (required for local dynamodb)
 - ```sls dynamodb install``` (required for local dynamodb)
 - ```sls dynamodb start``` (then visit http://localhost:8000/shell)
@@ -29,6 +30,10 @@ Base path should be ```https://localhost:5001```, so test something like ```http
 
     Note: SSL certificate check must be disabled in Postman, otherwise this won't work.
 - use ```.NET Core Launch (web)``` task in VSCode, which will open ```https://localhost:6001/swagger``` in browser
+### Online
+- ```dotnet restore```
+- ```dotnet lambda package --configuration release --framework netcoreapp3.1 --output-package bin/release/netcoreapp3.1/deploy-package.zip```
+- ```serverless deploy -v```
 
 ## History (resouces used)
 ```dotnet new webapi```
