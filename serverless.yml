@@ -5,7 +5,7 @@ frameworkVersion: ">2.1.0"
 plugins:
   - serverless-dynamodb-local
 custom:
-  productReviewsTableName: ProductReviews
+  productReviewTableName: ProductReview
 
   dynamodb:
     stages:
@@ -21,8 +21,8 @@ provider:
   name: aws
   runtime: dotnetcore3.1
   region: us-east-1
-  # environment:
-  #   PRODUCT_REVIEWS_DYNAMODB_TABLE: ${self:custom.productReviewsTableName} #${self:service}-${opt:stage, self:provider.stage}
+  environment:
+    PRODUCT_REVIEW_DYNAMODB_TABLE: ${self:custom.productReviewTableName}
     
   iamRoleStatements:
     - Effect: Allow
@@ -34,7 +34,7 @@ provider:
         # - dynamodb:PutItem
         # - dynamodb:UpdateItem
         # - dynamodb:DeleteItem
-      Resource: "*" # "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/ProductReview" #${self:provider.environment.DYNAMODB_TABLE}"
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.PRODUCT_REVIEW_DYNAMODB_TABLE}"
 
 package:
   artifact: bin/release/netcoreapp3.1/deploy-package.zip
@@ -46,25 +46,24 @@ functions:
      - http:
          path: /{proxy+}
          method: ANY
-         #cors: true
 
-# resources:
-#   Resources:
-#     ProductReviewsTableName:
-#       Type: 'AWS::DynamoDB::Table'
-#       DeletionPolicy: Retain
-#       Properties:
-#         AttributeDefinitions:
-#           - AttributeName: UserId
-#             AttributeType: N
-#           - AttributeName: ProductName
-#             AttributeType: S
-#         KeySchema:
-#           - AttributeName: UserId
-#             KeyType: HASH
-#           - AttributeName: ProductName
-#             KeyType: RANGE
-#         ProvisionedThroughput:
-#           ReadCapacityUnits: 1
-#           WriteCapacityUnits: 1
-#         TableName: ${self:provider.environment.PRODUCT_REVIEWS_DYNAMODB_TABLE} #${self:provider.environment.DYNAMODB_TABLE}
+resources:
+  Resources:
+    ProductReviewsTableName:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: UserId
+            AttributeType: N
+          - AttributeName: ProductName
+            AttributeType: S
+        KeySchema:
+          - AttributeName: UserId
+            KeyType: HASH
+          - AttributeName: ProductName
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.PRODUCT_REVIEW_DYNAMODB_TABLE}
