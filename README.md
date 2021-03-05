@@ -38,19 +38,28 @@ Base path should be ```https://localhost:5001```, so test something like ```http
 - Make sure to manually add an item in DynamoDb table using AWS Console, the app returns error if table is empty!!!
 
 ## Todo:
-### Use granular dynamodb permissions in serverless.yml file, instead of dynamodb.*
-### Authentification
+- Use granular dynamodb permissions in serverless.yml file, instead of dynamodb.*
+- Authentification
 
 ## History (resouces used)
 ```dotnet new webapi```
-Added DynamoDB and project structure from http://blog.romanpavlov.me/net-core-app-with-aws-dynamo-db and its github repo: https://github.com/roman-pavlov/dynamo-db-demo
-Learned how to use local dynamodb from:
-https://www.codeproject.com/Articles/5273030/ASP-NET-Core-Web-API-plus-DynamoDB-Locally
-Since this project has a different structure than ```dotnet new serverless.AspNetCoreWebAPI```, we have to update serverless.yml to take this into account. Used:
+
+Added DynamoDB and project structure from http://blog.romanpavlov.me/net-core-app-with-aws-dynamo-db and its github repo https://github.com/roman-pavlov/dynamo-db-demo
+
+Learned how to use local dynamodb from https://www.codeproject.com/Articles/5273030/ASP-NET-Core-Web-API-plus-DynamoDB-Locally
+
+Since this project has a different structure than ```dotnet new serverless.AspNetCoreWebAPI```, we have to update serverless.yml to take this into account. 
+Used:
 https://dev.to/schwamster/deploy-a-net-core-web-api-with-aws-lambda-and-the-serverless-framework-3762
 https://nodogmablog.bryanhogan.net/2020/07/dynamodb-reading-and-writing-data-with-net-core-part-1/
 
 https://referbruv.com/blog/posts/deploying-an-aspnet-core-api-into-an-aws-lambda-function
+
+Added JWT auth from https://github.com/cornflourblue/aspnet-core-3-registration-login-api https://jasonwatmore.com/post/2019/10/14/aspnet-core-3-simple-api-for-authentication-registration-and-user-management
+
+To add facebook auth from https://docs.microsoft.com/en-us/aspnet/core/security/authentication/social/facebook-logins?view=aspnetcore-5.0
+
+RPG Game: https://github.com/patrickgod/dotnet-rpg
 
 ## File structure
 - ```Properties``` folder is used by Visual Studio for launching
