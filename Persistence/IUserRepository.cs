@@ -7,9 +7,8 @@ namespace ServerlessDotnetApi.Persistence
     {
         Task<UserItem> GetByUsername(string username);
         Task<IEnumerable<UserItem>> GetAllAsync();
-        Task<UserItem> GetById(int id);
         Task<UserItem> Create(UserItem user);
         Task Update(UserItem userParam);
-        Task Delete(int id);
+        Task Delete(string username);
     }
 }

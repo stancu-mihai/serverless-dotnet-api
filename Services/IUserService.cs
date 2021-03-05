@@ -8,9 +8,9 @@ namespace ServerlessDotnetApi.Services
     {
         Task<UserResponse> Authenticate(string username, string password);
         Task<List<UserResponse>> GetAll();
-        Task<UserResponse> GetById(int id);
+        Task<UserResponse> GetByUsername(string username);
         Task<UserResponse> Create(UserRequest user, string password);
         Task Update(UserResponse user, string password = null); //Receives UserResponse due to id
-        Task Delete(int id);
+        Task Delete(string username);
     }
 }

@@ -58,9 +58,9 @@ namespace ServerlessDotnetApi.Services
             return result;
         }
 
-        public async Task<UserResponse> GetById(int id)
+        public async Task<UserResponse> GetByUsername(string username)
         {
-            var user = await _userRepository.GetById(id);
+            var user = await _userRepository.GetByUsername(username);
 
             var result = new UserResponse();     
             result.FirstName =  user.FirstName;
@@ -69,7 +69,7 @@ namespace ServerlessDotnetApi.Services
 
             // authentication successful
             return result;
-        }
+        }        
 
         public async Task<UserResponse> Create(UserRequest user, string password)
         {
@@ -97,14 +97,13 @@ namespace ServerlessDotnetApi.Services
             newUserResponse.LastName =  user.LastName;
             newUserResponse.Username =  user.Username;
             newUserResponse.Password =  user.Password;
-            newUserResponse.Id = item.Id;
 
             return newUserResponse;
         }
 
         public async Task Update(UserResponse userParam, string password = null)
         {
-            var user = await _userRepository.GetById(userParam.Id);
+            var user = await _userRepository.GetByUsername(userParam.Username);
 
             if (user == null)
                 throw new Exception("User not found");
@@ -139,13 +138,10 @@ namespace ServerlessDotnetApi.Services
             await _userRepository.Update(user);
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(string username)
         {
-            var user = await _userRepository.GetById(id);
-            if (null != user)
-            {
-                await _userRepository.Delete(user.Id);
-            }
+            await _userRepository.Delete(username);
+            return;
         }
 
         // private helper methods
