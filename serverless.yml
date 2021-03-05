@@ -23,6 +23,7 @@ provider:
   region: us-east-1
   environment:
     PRODUCT_REVIEW_DYNAMODB_TABLE: ${self:custom.productReviewTableName}
+    USER_DYNAMODB_TABLE: ${self:custom.userTableName}
     
   iamRoleStatements:
     - Effect: Allow
@@ -35,6 +36,16 @@ provider:
         # - dynamodb:UpdateItem
         # - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.PRODUCT_REVIEW_DYNAMODB_TABLE}"
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+        # - dynamodb:Query
+        # - dynamodb:Scan
+        # - dynamodb:GetItem
+        # - dynamodb:PutItem
+        # - dynamodb:UpdateItem
+        # - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.USER_DYNAMODB_TABLE}"
 
 package:
   artifact: bin/release/netcoreapp3.1/deploy-package.zip
@@ -49,21 +60,35 @@ functions:
 
 resources:
   Resources:
-    ProductReviewsTableName:
+    ProductReviewTableName:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
       Properties:
-        AttributeDefinitions:
+        AttributeDefinitions:           # Only the hash key and the range key are defined. The rest is schemaless
           - AttributeName: UserId
-            AttributeType: N
+            AttributeType: N            # Number, String, Binary or Boolean
           - AttributeName: ProductName
-            AttributeType: S
-        KeySchema:
+            AttributeType: S            # Number, String, Binary or Boolean
+        KeySchema:                      # Only the hash key and the range key are defined. The rest is schemaless
           - AttributeName: UserId
-            KeyType: HASH
+            KeyType: HASH               # Hash key - single attribute that uniquely identifies an item
           - AttributeName: ProductName
-            KeyType: RANGE
+            KeyType: RANGE              # Hash and Range Key consists of two attributes that together, uniquely identify an item.
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.PRODUCT_REVIEW_DYNAMODB_TABLE}
+    UserTableName:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:           # Only the hash key and the range key are defined. The rest is schemaless
+          - AttributeName: Username
+            AttributeType: S            # Number, String, Binary or Boolean
+        KeySchema:                      # Only the hash key and the range key are defined. The rest is schemaless
+          - AttributeName: Username
+            KeyType: HASH               # Hash key - single attribute that uniquely identifies an item
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.USER_DYNAMODB_TABLE}

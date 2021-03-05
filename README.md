@@ -22,7 +22,9 @@ Starter for REST API project:
 - Open a new terminal to run the next command(s):
 - If table already exists, delete it: ```aws dynamodb delete-table --table-name ProductReview --endpoint-url http://localhost:8000```
 - ```aws dynamodb create-table --cli-input-json file://create-table-productreview.json --endpoint-url http://localhost:8000```
+- ```aws dynamodb create-table --cli-input-json file://create-table-user.json --endpoint-url http://localhost:8000```
 - ```aws dynamodb list-tables --endpoint-url http://localhost:8000```
+- ```aws dynamodb scan --table-name User --endpoint-url http://localhost:8000```
 - ```dotnet tool install --global Amazon.Lambda.Tools --version 3.0.1``` Required to package the lambda function into zip.
 - run ```.\build.ps1``` every time the code changes
 Two options:
