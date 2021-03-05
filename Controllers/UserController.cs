@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using ServerlessDotnetApi.Services;
 using ServerlessDotnetApi.Persistence;
 using ServerlessDotnetApi.Models;
+using ServerlessDotnetApi.Helpers;
 using System.Threading.Tasks;
 
 namespace ServerlessDotnetApi.Controllers
@@ -21,9 +22,12 @@ namespace ServerlessDotnetApi.Controllers
     {
         private IUserService _userService;
 
-        public UsersController(IUserService userService)
+        private readonly AppSettings _appSettings;
+
+        public UsersController(IUserService userService, IOptions<AppSettings> appSettings)
         {
             _userService = userService;
+            _appSettings = appSettings.Value;
         }
 
         [AllowAnonymous]
@@ -36,13 +40,12 @@ namespace ServerlessDotnetApi.Controllers
                 return BadRequest(new { message = "Username or password is incorrect" });
 
             var tokenHandler = new JwtSecurityTokenHandler();
-
-            var key = Encoding.ASCII.GetBytes("AUTH_SECRET");
+            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Id.ToString())
+                    new Claim(ClaimTypes.Name, user.Username.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -53,7 +56,6 @@ namespace ServerlessDotnetApi.Controllers
             // return basic user info and authentication token
             return Ok(new
             {
-                Id = user.Id,
                 Username = user.Username,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
@@ -84,14 +86,14 @@ namespace ServerlessDotnetApi.Controllers
             return Ok(await _userService.GetAll());
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        [HttpGet("{username}")]
+        public async Task<IActionResult> GetByUsername(string username)
         {
-            return Ok(await _userService.GetById(id));
+            return Ok(await _userService.GetByUsername(username));
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody]UserResponse user)
+        [HttpPut("{username}")]
+        public async Task<IActionResult> Update(string username, [FromBody]UserResponse user)
         {
             try
             {
@@ -106,10 +108,10 @@ namespace ServerlessDotnetApi.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpDelete("{username}")]
+        public async Task<IActionResult> Delete(string username)
         {
-            await _userService.Delete(id);
+            await _userService.Delete(username);
             return Ok();
         }
     }
