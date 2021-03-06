@@ -28,17 +28,17 @@ namespace ServerlessDotnetApi.Persistence
         }
         public async Task<UserItem> Create(UserItem user)
         {
-            await _context.SaveAsync(user);
+            await _context.SaveAsync<UserItem>(user);
             return user;
         }
         public async Task Update(UserItem userParam)
         {
-            await _context.SaveAsync(userParam);
+            await _context.SaveAsync<UserItem>(userParam);
             return;
         }
         public async Task Delete(string username)
         {
-            await _context.DeleteAsync(username);
+            await _context.DeleteAsync<UserItem>(username);
             return;
         }
     }
