@@ -41,4 +41,5 @@ namespace ServerlessDotnetApi.Persistence
             await _context.DeleteAsync(username);
             return;
         }
+    }
 }
