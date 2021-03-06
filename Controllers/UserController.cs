@@ -31,7 +31,7 @@ namespace ServerlessDotnetApi.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("authenticate")]
+        [HttpPost("auth/authenticate")]
         public async Task<IActionResult> Authenticate([FromBody]UserRequest model)
         {
             var user = await _userService.Authenticate(model.Username, model.Password);
@@ -64,7 +64,7 @@ namespace ServerlessDotnetApi.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("register")]
+        [HttpPost("auth/register")]
         public async Task<IActionResult> Register([FromBody]UserRequest user)
         {
             try
@@ -88,7 +88,7 @@ namespace ServerlessDotnetApi.Controllers
 
         [HttpGet("{username}")]
         public async Task<IActionResult> GetByUsername(string username)
-        {
+        {            
             return Ok(await _userService.GetByUsername(username));
         }
 
