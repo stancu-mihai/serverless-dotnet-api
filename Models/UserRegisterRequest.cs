@@ -2,7 +2,7 @@ using System;
 
 namespace ServerlessDotnetApi.Models
 {
-    public class UserRequest
+    public class UserRegisterRequest
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

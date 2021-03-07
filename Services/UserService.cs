@@ -73,7 +73,7 @@ namespace ServerlessDotnetApi.Services
             return result;
         }        
 
-        public async Task<UserResponse> Create(UserRequest user, string password)
+        public async Task<UserResponse> Create(UserRegisterRequest user, string password)
         {
             // validation
             if (string.IsNullOrWhiteSpace(password))
