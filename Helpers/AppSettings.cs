@@ -1,0 +1,8 @@
+  
+namespace ServerlessDotnetApi.Helpers
+{
+    public class AppSettings
+    {
+        public string Secret { get; set; }
+    }
+}

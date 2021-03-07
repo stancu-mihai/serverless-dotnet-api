@@ -22,7 +22,9 @@ Starter for REST API project:
 - Open a new terminal to run the next command(s):
 - If table already exists, delete it: ```aws dynamodb delete-table --table-name ProductReview --endpoint-url http://localhost:8000```
 - ```aws dynamodb create-table --cli-input-json file://create-table-productreview.json --endpoint-url http://localhost:8000```
+- ```aws dynamodb create-table --cli-input-json file://create-table-user.json --endpoint-url http://localhost:8000```
 - ```aws dynamodb list-tables --endpoint-url http://localhost:8000```
+- ```aws dynamodb scan --table-name User --endpoint-url http://localhost:8000```
 - ```dotnet tool install --global Amazon.Lambda.Tools --version 3.0.1``` Required to package the lambda function into zip.
 - run ```.\build.ps1``` every time the code changes
 Two options:
@@ -36,21 +38,71 @@ Base path should be ```https://localhost:5001```, so test something like ```http
 - ```.\build.ps1```
 - ```serverless deploy -v```
 - Make sure to manually add an item in DynamoDb table using AWS Console, the app returns error if table is empty!!!
+### Testing in Postman
+- POST to ```https://localhost:6001/Users/auth/register``` the following message as Body/raw:
+```json
+{
+  "firstName": "fn",
+  "lastName": "ln",
+  "username": "user",
+  "password": "pass"
+}
+```
+
+- Make sure in Headers you have ```Content-Type``` set as ```application/json```
+
+- Make sure ```No auth``` is selected in ```Authorization``` tab!
+
+- POST to ```https://localhost:6001/Users/auth/authenticate``` the following message as Body/raw:
+```json
+{
+  "username": "user",
+  "password": "pass"
+}
+```
+- Make sure in Headers you have ```Content-Type``` set as ```application/json```
+
+- Make sure ```No auth``` is selected in ```Authorization``` tab!
+
+- Note the token received, which will be used in the next requests.
+
+- GET from ```https://localhost:6001/Users/user``` with Body set to None.
+Make sure in Headers you have ```Content-Type``` set as ```application/json```
+
+Make sure ```Bearer token``` is selected in ```Authorization```. Copy + paste the token!
 
 ## Todo:
-### Use granular dynamodb permissions in serverless.yml file, instead of dynamodb.*
-### Authentification
+- Use granular dynamodb permissions in serverless.yml file, instead of dynamodb.*
+- Federated authentification
+- User roles
+- Validate REST data (schema)
+- Confirmation email
+- Access currently logged in user (User.Claims?)
+- Unit tests
+- Repository is tightly coupled with DynamoDBContext. Database migrations also can't currently be handled. Take a look into Entity Framework Core, and its support for DynamoDB?
+- Lock icon for authorization requiring services
+- Query parameters (?q=search&a=15)
+- Logging
 
 ## History (resouces used)
 ```dotnet new webapi```
-Added DynamoDB and project structure from http://blog.romanpavlov.me/net-core-app-with-aws-dynamo-db and its github repo: https://github.com/roman-pavlov/dynamo-db-demo
-Learned how to use local dynamodb from:
-https://www.codeproject.com/Articles/5273030/ASP-NET-Core-Web-API-plus-DynamoDB-Locally
-Since this project has a different structure than ```dotnet new serverless.AspNetCoreWebAPI```, we have to update serverless.yml to take this into account. Used:
+
+Added DynamoDB and project structure from http://blog.romanpavlov.me/net-core-app-with-aws-dynamo-db and its github repo https://github.com/roman-pavlov/dynamo-db-demo
+
+Learned how to use local dynamodb from https://www.codeproject.com/Articles/5273030/ASP-NET-Core-Web-API-plus-DynamoDB-Locally
+
+Since this project has a different structure than ```dotnet new serverless.AspNetCoreWebAPI```, we have to update serverless.yml to take this into account. 
+Used:
 https://dev.to/schwamster/deploy-a-net-core-web-api-with-aws-lambda-and-the-serverless-framework-3762
 https://nodogmablog.bryanhogan.net/2020/07/dynamodb-reading-and-writing-data-with-net-core-part-1/
 
 https://referbruv.com/blog/posts/deploying-an-aspnet-core-api-into-an-aws-lambda-function
+
+Added JWT auth from https://github.com/cornflourblue/aspnet-core-3-registration-login-api https://jasonwatmore.com/post/2019/10/14/aspnet-core-3-simple-api-for-authentication-registration-and-user-management
+
+To add facebook auth from https://docs.microsoft.com/en-us/aspnet/core/security/authentication/social/facebook-logins?view=aspnetcore-5.0
+
+RPG Game: https://github.com/patrickgod/dotnet-rpg
 
 ## File structure
 - ```Properties``` folder is used by Visual Studio for launching
