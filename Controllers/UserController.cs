@@ -93,7 +93,7 @@ namespace ServerlessDotnetApi.Controllers
         }
 
         [HttpPut("{username}")]
-        public async Task<IActionResult> Update(string username, [FromBody]UserResponse user)
+        public async Task<IActionResult> Update(string username, [FromBody]UserRegisterRequest user)
         {
             try
             {

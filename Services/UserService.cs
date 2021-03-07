@@ -35,7 +35,6 @@ namespace ServerlessDotnetApi.Services
             result.FirstName =  user.FirstName;
             result.LastName =  user.LastName;
             result.Username =  user.Username;
-            result.Password = password;
 
             // authentication successful
             return result;
@@ -98,12 +97,11 @@ namespace ServerlessDotnetApi.Services
             newUserResponse.FirstName =  user.FirstName;
             newUserResponse.LastName =  user.LastName;
             newUserResponse.Username =  user.Username;
-            newUserResponse.Password =  user.Password;
 
             return newUserResponse;
         }
 
-        public async Task Update(UserResponse userParam, string password = null)
+        public async Task Update(UserRegisterRequest userParam, string password = null)
         {
             var user = await _userRepository.GetByUsername(userParam.Username);
 

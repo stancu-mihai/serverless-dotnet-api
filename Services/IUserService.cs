@@ -10,7 +10,7 @@ namespace ServerlessDotnetApi.Services
         Task<List<UserResponse>> GetAll();
         Task<UserResponse> GetByUsername(string username);
         Task<UserResponse> Create(UserRegisterRequest user, string password);
-        Task Update(UserResponse user, string password = null); //Receives UserResponse due to id
+        Task Update(UserRegisterRequest user, string password = null);
         Task Delete(string username);
     }
 }
