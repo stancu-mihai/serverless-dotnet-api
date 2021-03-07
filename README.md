@@ -38,10 +38,51 @@ Base path should be ```https://localhost:5001```, so test something like ```http
 - ```.\build.ps1```
 - ```serverless deploy -v```
 - Make sure to manually add an item in DynamoDb table using AWS Console, the app returns error if table is empty!!!
+### Testing in Postman
+- POST to ```https://localhost:6001/Users/auth/register``` the following message as Body/raw:
+```json
+{
+  "firstName": "fn",
+  "lastName": "ln",
+  "username": "user",
+  "password": "pass"
+}
+```
+
+- Make sure in Headers you have ```Content-Type``` set as ```application/json```
+
+- Make sure ```No auth``` is selected in ```Authorization``` tab!
+
+- POST to ```https://localhost:6001/Users/auth/authenticate``` the following message as Body/raw:
+```json
+{
+  "username": "user",
+  "password": "pass"
+}
+```
+- Make sure in Headers you have ```Content-Type``` set as ```application/json```
+
+- Make sure ```No auth``` is selected in ```Authorization``` tab!
+
+- Note the token received, which will be used in the next requests.
+
+- GET from ```https://localhost:6001/Users/user``` with Body set to None.
+Make sure in Headers you have ```Content-Type``` set as ```application/json```
+
+Make sure ```Bearer token``` is selected in ```Authorization```. Copy + paste the token!
 
 ## Todo:
 - Use granular dynamodb permissions in serverless.yml file, instead of dynamodb.*
-- Authentification
+- Federated authentification
+- User roles
+- Validate REST data (schema)
+- Confirmation email
+- Access currently logged in user (User.Claims?)
+- Unit tests
+- Repository is tightly coupled with DynamoDBContext. Database migrations also can't currently be handled. Take a look into Entity Framework Core, and its support for DynamoDB?
+- Lock icon for authorization requiring services
+- Query parameters (?q=search&a=15)
+- Logging
 
 ## History (resouces used)
 ```dotnet new webapi```
