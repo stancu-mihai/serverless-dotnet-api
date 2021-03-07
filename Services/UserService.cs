@@ -61,6 +61,8 @@ namespace ServerlessDotnetApi.Services
         public async Task<UserResponse> GetByUsername(string username)
         {
             var user = await _userRepository.GetByUsername(username);
+            if(null == user)
+                return null;
 
             var result = new UserResponse();     
             result.FirstName =  user.FirstName;
