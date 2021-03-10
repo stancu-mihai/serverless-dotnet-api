@@ -6,6 +6,7 @@ plugins:
   - serverless-dynamodb-local
 custom:
   productReviewTableName: ProductReview
+  userTableName: User
 
   dynamodb:
     stages:

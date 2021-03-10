@@ -60,7 +60,7 @@ namespace ServerlessDotnetApi.Controllers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Token = tokenString
-            });        
+            });
         }
 
         [AllowAnonymous]
