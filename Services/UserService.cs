@@ -35,6 +35,7 @@ namespace ServerlessDotnetApi.Services
             result.FirstName =  user.FirstName;
             result.LastName =  user.LastName;
             result.Username =  user.Username;
+            result.Role = user.Role;
 
             // authentication successful
             return result;
@@ -51,6 +52,7 @@ namespace ServerlessDotnetApi.Services
                 userResponse.FirstName =  user.FirstName;
                 userResponse.LastName =  user.LastName;
                 userResponse.Username =  user.Username;
+                userResponse.Role =  user.Role;
                 result.Add(userResponse);
             }
 
@@ -67,6 +69,7 @@ namespace ServerlessDotnetApi.Services
             result.FirstName =  user.FirstName;
             result.LastName =  user.LastName;
             result.Username =  user.Username;
+            result.Role = user.Role;
 
             // authentication successful
             return result;
@@ -90,6 +93,7 @@ namespace ServerlessDotnetApi.Services
             newUserItem.Username =  user.Username;
             newUserItem.PasswordHash =  passwordHash;
             newUserItem.PasswordSalt = passwordSalt;
+            newUserItem.Role = Role.User; 
 
             var item = await _userRepository.Create(newUserItem);
 
@@ -97,6 +101,7 @@ namespace ServerlessDotnetApi.Services
             newUserResponse.FirstName =  user.FirstName;
             newUserResponse.LastName =  user.LastName;
             newUserResponse.Username =  user.Username;
+            newUserResponse.Role = Role.User;
 
             return newUserResponse;
         }
@@ -111,10 +116,12 @@ namespace ServerlessDotnetApi.Services
             // update username if it has changed
             if (!string.IsNullOrWhiteSpace(userParam.Username) && userParam.Username != user.Username)
             {
-                // throw error if the new username is already taken
+            // throw error if the new username is already taken
             if (null != await _userRepository.GetByUsername(user.Username))
                     throw new Exception("Username " + userParam.Username + " is already taken");
 
+                if(Role.Admin == await GetUserRole(user.Username))
+                    throw new Exception("Only admins can modify username"); // Avoid normal user trying to become admin by renaming himself
                 user.Username = userParam.Username;
             }
 
@@ -142,6 +149,15 @@ namespace ServerlessDotnetApi.Services
         {
             await _userRepository.Delete(username);
             return;
+        }
+
+        public async Task<Role> GetUserRole(string username)
+        {
+            var user =  await GetByUsername(username);
+            if (user == null)
+                throw new Exception("User not found");
+                
+            return user.Role;
         }
 
         // private helper methods

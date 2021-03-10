@@ -25,6 +25,7 @@ Starter for REST API project:
 - ```aws dynamodb create-table --cli-input-json file://create-table-user.json --endpoint-url http://localhost:8000```
 - ```aws dynamodb list-tables --endpoint-url http://localhost:8000```
 - ```aws dynamodb scan --table-name User --endpoint-url http://localhost:8000```
+- ```aws dynamodb put-item --table-name User --item file://admin-user.json --endpoint-url http://localhost:8000``` Adds admin (admin/pass)
 - ```dotnet tool install --global Amazon.Lambda.Tools --version 3.0.1``` Required to package the lambda function into zip.
 - run ```.\build.ps1``` every time the code changes
 Two options:
@@ -73,11 +74,10 @@ Make sure ```Bearer token``` is selected in ```Authorization```. Copy + paste th
 
 ## Todo:
 - Use granular dynamodb permissions in serverless.yml file, instead of dynamodb.*
+- Remove services, leave just controller and repository
 - Federated authentification
-- User roles
 - Validate REST data (schema)
 - Confirmation email
-- Access currently logged in user (User.Claims?)
 - Unit tests
 - Repository is tightly coupled with DynamoDBContext. Database migrations also can't currently be handled. Take a look into Entity Framework Core, and its support for DynamoDB?
 - Lock icon for authorization requiring services

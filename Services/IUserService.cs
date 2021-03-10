@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ServerlessDotnetApi.Models;
+using ServerlessDotnetApi.Persistence;
 
 namespace ServerlessDotnetApi.Services
 {
@@ -12,5 +13,6 @@ namespace ServerlessDotnetApi.Services
         Task<UserResponse> Create(UserRegisterRequest user, string password);
         Task Update(UserRegisterRequest user, string password = null);
         Task Delete(string username);
+        Task<Role> GetUserRole(string username);
     }
 }

@@ -13,7 +13,15 @@ namespace ServerlessDotnetApi.Persistence
         //[DynamoDBProperty(AttributeName = "name")] Having a property is optional in .net3, used only when the table field name differs from member
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public Role Role { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
+    }
+
+    public enum Role
+    {
+        SuperAdmin,
+        Admin,
+        User
     }
 }

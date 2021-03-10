@@ -1,0 +1,20 @@
+{
+    "Role": {
+        "S": "Admin"
+    },
+    "LastName": {
+        "S": "lna1"
+    },
+    "PasswordHash": {
+        "B": "4jV5EcZ7wotHLoB5usJeXrV1A+G0CLExTHdv5Z3GkVUN93Ay8KK+/c7lxQkdPI+tf1aX4/rMjZlyL1oGwiJvsA=="
+    },
+    "Username": {
+        "S": "admin"
+    },
+    "FirstName": {
+        "S": "fna1"
+    },
+    "PasswordSalt": {
+        "B": "4M7LfINmI7Cv6yx65Oacjr62NKS/W9751WPECTTgABjkHwR2jviNaBbJtpaXLevHVyH7m2Oi2csnf81cgJ+y+Tw1L8TIvDAxJb6Jvpq4PPbcU6T9uZoIp+NsOT7OBW7p5olBv5Sp+PsbgmHT37li7YfayNjIi2seaeV0o3/MkGM="
+    }
+}

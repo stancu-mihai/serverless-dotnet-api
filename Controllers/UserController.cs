@@ -60,7 +60,7 @@ namespace ServerlessDotnetApi.Controllers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Token = tokenString
-            });
+            });        
         }
 
         [AllowAnonymous]
@@ -83,13 +83,39 @@ namespace ServerlessDotnetApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            // Does the user in the token still exist in db?
+            var tokenUser =  await _userService.GetByUsername(User.Identity.Name);
+            if (tokenUser == null)
+                return NotFound();
+
+            // Is that user an admin?
+            if (Role.Admin != await _userService.GetUserRole(User.Identity.Name))
+                return Forbid();
+
             return Ok(await _userService.GetAll());
         }
 
         [HttpGet("{username}")]
         public async Task<IActionResult> GetByUsername(string username)
-        {            
-            return Ok(await _userService.GetByUsername(username));
+        {
+            // Does the user in the token still exist in db?
+            var tokenUser =  await _userService.GetByUsername(User.Identity.Name);
+
+            if (tokenUser == null)
+                return NotFound();
+            
+            // Is the requested user in the db?
+            var user = await _userService.GetByUsername(username);
+
+            if (user == null)
+                return NotFound();
+
+            // only allow admins to access other user records
+            if (username != User.Identity.Name && 
+                Role.Admin != await _userService.GetUserRole(username))
+                return Forbid();
+
+            return Ok(user);
         }
 
         [HttpPut("{username}")]
@@ -97,6 +123,21 @@ namespace ServerlessDotnetApi.Controllers
         {
             try
             {
+                // Does the user in the token still exist in db?
+                var tokenUser =  await _userService.GetByUsername(User.Identity.Name);
+                if (tokenUser == null)
+                    return NotFound();
+
+                // Is the requested user in the db?
+                var reqUser =  await _userService.GetByUsername(username);
+                if (reqUser == null)
+                    return NotFound();
+
+                // only allow admins to update other user records
+                if (username != User.Identity.Name && 
+                    Role.Admin != await _userService.GetUserRole(username))
+                    return Forbid();
+
                 // update user 
                 await _userService.Update(user, user.Password);
                 return Ok();
@@ -111,6 +152,22 @@ namespace ServerlessDotnetApi.Controllers
         [HttpDelete("{username}")]
         public async Task<IActionResult> Delete(string username)
         {
+            // Does the user in the token still exist in db?
+            var tokenUser =  await _userService.GetByUsername(User.Identity.Name);
+            if (tokenUser == null)
+                return NotFound();
+            
+            // Is the requested user in the db?
+            var reqUser =  await _userService.GetByUsername(username);
+            if (reqUser == null)
+                return NotFound();
+
+            // only allow admins to delete other user records
+            if (username != User.Identity.Name && 
+                Role.Admin != await _userService.GetUserRole(username))
+                return Forbid();
+
+            // delete user 
             await _userService.Delete(username);
             return Ok();
         }
