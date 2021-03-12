@@ -7,7 +7,6 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using ServerlessDotnetApi.Services;
 using ServerlessDotnetApi.Persistence;
 using ServerlessDotnetApi.Models;
 using ServerlessDotnetApi.Helpers;
@@ -20,23 +19,31 @@ namespace ServerlessDotnetApi.Controllers
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
-        private IUserService _userService;
-
+        private readonly IUserRepository _userRepository;
         private readonly AppSettings _appSettings;
 
-        public UsersController(IUserService userService, IOptions<AppSettings> appSettings)
+        public UsersController(IUserRepository userRepository, IOptions<AppSettings> appSettings)
         {
-            _userService = userService;
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _appSettings = appSettings.Value;
         }
 
         [AllowAnonymous]
         [HttpPost("auth/authenticate")]
-        public async Task<IActionResult> Authenticate([FromBody]UserLoginRequest model)
+        public async Task<IActionResult> Authenticate([FromBody]UserLoginRequest userRequest)
         {
-            var user = await _userService.Authenticate(model.Username, model.Password);
+            if (string.IsNullOrEmpty(userRequest.Username) || 
+                string.IsNullOrEmpty(userRequest.Password))
+                throw new Exception("Username and password are required");
 
+            var user = await _userRepository.GetByUsername(userRequest.Username);
+
+            // check if username exists
             if (user == null)
+                return BadRequest(new { message = "Username or password is incorrect" });
+
+            // check if password is correct
+            if (!VerifyPasswordHash(userRequest.Password, user.PasswordHash, user.PasswordSalt))
                 return BadRequest(new { message = "Username or password is incorrect" });
 
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -56,22 +63,47 @@ namespace ServerlessDotnetApi.Controllers
             // return basic user info and authentication token
             return Ok(new
             {
-                Username = user.Username,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Token = tokenString
+                Role = user.Role,
+                Token = tokenString,
+                Username = user.Username
             });
         }
 
         [AllowAnonymous]
         [HttpPost("auth/register")]
-        public async Task<IActionResult> Register([FromBody]UserRegisterRequest user)
+        public async Task<IActionResult> Register([FromBody]UserRegisterRequest userRequest)
         {
             try
             {
-                // create user
-                await _userService.Create(user, user.Password);
-                return Ok();
+                if (string.IsNullOrEmpty(userRequest.Username) || 
+                    string.IsNullOrEmpty(userRequest.Password))
+                    throw new Exception("Username and password are required");
+
+                if (null != await _userRepository.GetByUsername(userRequest.Username))
+                    throw new Exception("Username \"" + userRequest.Username + "\" is already taken");
+
+                byte[] passwordHash, passwordSalt;
+                CreatePasswordHash(userRequest.Password, out passwordHash, out passwordSalt);
+
+                var newUserItem = new UserItem();
+                newUserItem.FirstName =  userRequest.FirstName;
+                newUserItem.LastName =  userRequest.LastName;
+                newUserItem.Username =  userRequest.Username;
+                newUserItem.PasswordHash =  passwordHash;
+                newUserItem.PasswordSalt = passwordSalt;
+                newUserItem.Role = Role.User; 
+
+                var item = await _userRepository.Create(newUserItem);
+
+                return Ok(new
+                {
+                    FirstName = item.FirstName,
+                    LastName = item.LastName,
+                    Role = item.Role,
+                    Username = item.Username
+                });
             }
             catch (Exception ex)
             {
@@ -84,62 +116,108 @@ namespace ServerlessDotnetApi.Controllers
         public async Task<IActionResult> GetAll()
         {
             // Does the user in the token still exist in db?
-            var tokenUser =  await _userService.GetByUsername(User.Identity.Name);
+            var tokenUser =  await _userRepository.GetByUsername(User.Identity.Name); 
             if (tokenUser == null)
                 return NotFound();
 
             // Is that user an admin?
-            if (Role.Admin != await _userService.GetUserRole(User.Identity.Name))
+            if (Role.Admin != await GetUserRole(User.Identity.Name))
                 return Forbid();
 
-            return Ok(await _userService.GetAll());
+            var users = await _userRepository.GetAllAsync();
+
+            List<UserResponse> result = new List<UserResponse>();
+            foreach(var user in users)
+            {
+                var userResponse = new UserResponse
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Username = user.Username,
+                    Role = user.Role
+                };
+                result.Add(userResponse);
+            }
+
+            return Ok(result);
         }
 
         [HttpGet("{username}")]
         public async Task<IActionResult> GetByUsername(string username)
         {
             // Does the user in the token still exist in db?
-            var tokenUser =  await _userService.GetByUsername(User.Identity.Name);
+            var tokenUser =  await _userRepository.GetByUsername(User.Identity.Name);
 
             if (tokenUser == null)
                 return NotFound();
             
             // Is the requested user in the db?
-            var user = await _userService.GetByUsername(username);
+            var user = await _userRepository.GetByUsername(username);
 
             if (user == null)
                 return NotFound();
 
             // only allow admins to access other user records
             if (username != User.Identity.Name && 
-                Role.Admin != await _userService.GetUserRole(username))
+                Role.Admin != await GetUserRole(User.Identity.Name ))
                 return Forbid();
 
-            return Ok(user);
+            return Ok(new{
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Username = user.Username,
+                Role = user.Role
+            });
         }
 
         [HttpPut("{username}")]
-        public async Task<IActionResult> Update(string username, [FromBody]UserRegisterRequest user)
+        public async Task<IActionResult> Update([FromBody]UserRegisterRequest userRequest)
         {
             try
             {
                 // Does the user in the token still exist in db?
-                var tokenUser =  await _userService.GetByUsername(User.Identity.Name);
+                var tokenUser =  await _userRepository.GetByUsername(User.Identity.Name);
                 if (tokenUser == null)
                     return NotFound();
 
-                // Is the requested user in the db?
-                var reqUser =  await _userService.GetByUsername(username);
-                if (reqUser == null)
-                    return NotFound();
-
                 // only allow admins to update other user records
-                if (username != User.Identity.Name && 
-                    Role.Admin != await _userService.GetUserRole(username))
+                if (userRequest.Username != User.Identity.Name && 
+                    Role.Admin != await GetUserRole(User.Identity.Name))
                     return Forbid();
 
+                // update username if it has changed
+                if (!string.IsNullOrWhiteSpace(userRequest.Username) &&
+                     userRequest.Username != User.Identity.Name)
+                {
+                    // throw error if the new username is already taken
+                    if (null != await _userRepository.GetByUsername(userRequest.Username))
+                        throw new Exception("Username " + userRequest.Username + " is already taken");
+
+                    if(Role.Admin == await GetUserRole(userRequest.Username))
+                        throw new Exception("Only admins can modify username"); // Avoid normal user trying to become admin by renaming himself
+                    tokenUser.Username = userRequest.Username;
+                }
+
+                // update user properties if provided
+                if (!string.IsNullOrWhiteSpace(userRequest.FirstName))
+                    tokenUser.FirstName = userRequest.FirstName;
+
+                if (!string.IsNullOrWhiteSpace(userRequest.LastName))
+                    tokenUser.LastName = userRequest.LastName;
+
+                // update password if provided
+                if (!string.IsNullOrWhiteSpace(userRequest.Password))
+                {
+                    byte[] passwordHash, passwordSalt;
+                    CreatePasswordHash(userRequest.Password, out passwordHash, out passwordSalt);
+
+                    tokenUser.PasswordHash = passwordHash;
+                    tokenUser.PasswordSalt = passwordSalt;
+                }
+
                 // update user 
-                await _userService.Update(user, user.Password);
+                await _userRepository.Update(tokenUser);
+
                 return Ok();
             }
             catch (Exception ex)
@@ -153,23 +231,62 @@ namespace ServerlessDotnetApi.Controllers
         public async Task<IActionResult> Delete(string username)
         {
             // Does the user in the token still exist in db?
-            var tokenUser =  await _userService.GetByUsername(User.Identity.Name);
+            var tokenUser =  await _userRepository.GetByUsername(User.Identity.Name);
             if (tokenUser == null)
                 return NotFound();
             
             // Is the requested user in the db?
-            var reqUser =  await _userService.GetByUsername(username);
+            var reqUser =  await _userRepository.GetByUsername(username);
             if (reqUser == null)
                 return NotFound();
 
             // only allow admins to delete other user records
             if (username != User.Identity.Name && 
-                Role.Admin != await _userService.GetUserRole(username))
+                Role.Admin != await GetUserRole(username))
                 return Forbid();
 
             // delete user 
-            await _userService.Delete(username);
+            await _userRepository.Delete(username);
             return Ok();
+        }
+
+        // private helper methods
+        private async Task<Role> GetUserRole(string username)
+        {
+            var user =  await _userRepository.GetByUsername(username);
+            if (user == null)
+                throw new Exception("User not found");
+                
+            return user.Role;
+        }
+        private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            if (password == null) throw new ArgumentNullException("password");
+            if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Value cannot be empty or whitespace only string.", "password");
+
+            using (var hmac = new System.Security.Cryptography.HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            }
+        }
+        private static bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
+        {
+            if (password == null) throw new ArgumentNullException("password");
+            if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Value cannot be empty or whitespace only string.", "password");
+            if (storedHash.Length != 64) throw new ArgumentException("Invalid length of password hash (64 bytes expected).", "passwordHash");
+            if (storedSalt.Length != 128) throw new ArgumentException("Invalid length of password salt (128 bytes expected).", "passwordHash");
+
+            using (var hmac = new System.Security.Cryptography.HMACSHA512(storedSalt))
+            {
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                for (int i = 0; i < computedHash.Length; i++)
+                {
+                    if (computedHash[i] != storedHash[i]) return false;
+                }
+            }
+
+            return true;
         }
     }
 }

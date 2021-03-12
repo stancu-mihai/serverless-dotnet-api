@@ -1,8 +1,16 @@
 # ServerlessDotnetApi
 Starter for REST API project:
-- dotnet
-- dynamodb (also available locally)
-- swagger
+- [x] Should use .NET
+- [x] Should use DynamoDB
+- [x] Should use The serverless framework
+- [x] Should generate Swagger documentation automatically on new controller
+- [x] Should be testable offline
+- [x] Should allow JWT authentification
+- [ ] Should allow federated authentification
+- [x] Should allow role-based authorization
+- [ ] Should have 100% unit test coverage
+- [ ] Should allow logging
+- [ ] Should allow query parameters (?year=2015&product_name=test)
 
 ## Prerequisites:
 - Node.js (required to install Serverless framework)
@@ -83,6 +91,14 @@ Make sure ```Bearer token``` is selected in ```Authorization```. Copy + paste th
 - Lock icon for authorization requiring services
 - Query parameters (?q=search&a=15)
 - Logging
+- User - should replace username with user id
+
+## Decisions
+- JWT Should contain just user id, because it is the only one not changing (otherwise the token may contain a deleted user and would still work for 7 days)
+
+## Questions
+- Admin and User in the same db?
+- (Dynamodb) How to generate id when user is written to db?
 
 ## History (resouces used)
 ```dotnet new webapi```

@@ -60,8 +60,8 @@ namespace ServerlessDotnetApi
                 {
                     OnTokenValidated = context =>
                     {
-                        var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
-                        var user = userService.GetByUsername(context.Principal.Identity.Name);
+                        var userRepo = context.HttpContext.RequestServices.GetRequiredService<IUserRepository>();
+                        var user = userRepo.GetByUsername(context.Principal.Identity.Name);
                         if (user == null)
                         {
                             // return unauthorized if user no longer exists
@@ -83,7 +83,6 @@ namespace ServerlessDotnetApi
 
             // configure DI for application services
             services.AddSingleton<IUserRepository, UserRepository>();
-            services.AddScoped<IUserService, UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
