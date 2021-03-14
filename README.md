@@ -11,6 +11,8 @@ Starter for REST API project:
 - [ ] Should have 100% unit test coverage
 - [ ] Should allow logging
 - [ ] Should allow query parameters (?year=2015&product_name=test)
+- [ ] Entity framework
+- [ ] Schema validation
 
 ## Prerequisites:
 - Node.js (required to install Serverless framework)
@@ -115,6 +117,8 @@ https://nodogmablog.bryanhogan.net/2020/07/dynamodb-reading-and-writing-data-wit
 https://referbruv.com/blog/posts/deploying-an-aspnet-core-api-into-an-aws-lambda-function
 
 Added JWT auth from https://github.com/cornflourblue/aspnet-core-3-registration-login-api https://jasonwatmore.com/post/2019/10/14/aspnet-core-3-simple-api-for-authentication-registration-and-user-management
+
+https://docs.microsoft.com/en-us/dotnet/core/testing/unit-testing-with-dotnet-test
 
 To add facebook auth from https://docs.microsoft.com/en-us/aspnet/core/security/authentication/social/facebook-logins?view=aspnetcore-5.0
 

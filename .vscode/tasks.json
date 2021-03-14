@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "clean",
-                "${workspaceFolder}/ServerlessDotnetApi.csproj"
+                "${workspaceFolder}/ServerlessDotnetApi.sln"
             ],
             "problemMatcher": "$msCompile"
         },
@@ -17,7 +17,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/ServerlessDotnetApi.csproj"
+                "${workspaceFolder}/ServerlessDotnetApi.sln"
             ],
             "problemMatcher": "$msCompile",
             "dependsOn":["cleanweb"]
@@ -28,7 +28,7 @@
             "type": "process",
             "args": [
                 "clean",
-                "${workspaceFolder}/ServerlessDotnetApi.csproj"
+                "${workspaceFolder}/ServerlessDotnetApi.sln"
             ],
             "problemMatcher": "$msCompile"
         },
@@ -38,7 +38,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/ServerlessDotnetApi.csproj"
+                "${workspaceFolder}/ServerlessDotnetApi.sln"
             ],
             "problemMatcher": "$msCompile",
             "dependsOn":["cleanapi"]
