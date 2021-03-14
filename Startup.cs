@@ -14,7 +14,6 @@ using Microsoft.OpenApi.Models;
 using Amazon.DynamoDBv2;
 using System.Text.Json;
 using ServerlessDotnetApi.Persistence;
-using ServerlessDotnetApi.Services;
 using ServerlessDotnetApi.Helpers;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -34,12 +33,9 @@ namespace ServerlessDotnetApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers()
                 .AddJsonOptions(x => { x.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase; });
             services.AddAWSService<IAmazonDynamoDB>(Configuration.GetAWSOptions("Dynamodb"));
-            services.AddSingleton<IProductReviewRepository, ProductReviewRepository>();
-            services.AddSingleton<IProductReviewService, ProductReviewService>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ServerlessDotnetApi", Version = "v1" });
@@ -83,6 +79,7 @@ namespace ServerlessDotnetApi
 
             // configure DI for application services
             services.AddSingleton<IUserRepository, UserRepository>();
+            services.AddSingleton<IProductReviewRepository, ProductReviewRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
