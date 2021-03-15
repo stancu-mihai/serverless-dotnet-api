@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerlessDotnetApi", "Main\ServerlessDotnetApi.csproj", "{4CD7BF52-DFB5-46A5-9608-782BAE4DB285}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Main", "Main\Main.csproj", "{4CD7BF52-DFB5-46A5-9608-782BAE4DB285}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerlessDotnetApi.Tests", "Main.Tests\ServerlessDotnetApi.Tests.csproj", "{D649ADA2-1E72-4FDF-A908-17CBABDBA20F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Main.Tests", "Main.Tests\Main.Tests.csproj", "{D649ADA2-1E72-4FDF-A908-17CBABDBA20F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

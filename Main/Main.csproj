@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework> <!--A "net5.0" not yet supported by serverless framework or aws -->
-    <RootNamespace>ServerlessDotnetApi</RootNamespace>
+    <RootNamespace>Main</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

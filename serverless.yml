@@ -53,7 +53,7 @@ package:
 
 functions:
   api:
-    handler: ServerlessDotnetApi::ServerlessDotnetApi.LambdaEntryPoint::FunctionHandlerAsync
+    handler: Main::Main.LambdaEntryPoint::FunctionHandlerAsync #<AssemblyName>::<Namespace.Class>::<Function>
     events:
      - http:
          path: /{proxy+}

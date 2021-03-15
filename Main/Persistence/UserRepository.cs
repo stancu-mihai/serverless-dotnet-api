@@ -6,7 +6,7 @@ using Amazon.DynamoDBv2.DataModel;
 using Amazon.Lambda.Serialization.Json;
 using System.Linq;
 
-namespace ServerlessDotnetApi.Persistence
+namespace Main.Persistence
 {
     public class UserRepository : IUserRepository
     {

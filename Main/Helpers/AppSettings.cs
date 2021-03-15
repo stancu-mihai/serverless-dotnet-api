@@ -1,5 +1,5 @@
   
-namespace ServerlessDotnetApi.Helpers
+namespace Main.Helpers
 {
     public class AppSettings
     {

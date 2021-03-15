@@ -7,12 +7,12 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using ServerlessDotnetApi.Persistence;
-using ServerlessDotnetApi.Models;
-using ServerlessDotnetApi.Helpers;
+using Main.Persistence;
+using Main.Models;
+using Main.Helpers;
 using System.Threading.Tasks;
 
-namespace ServerlessDotnetApi.Controllers
+namespace Main.Controllers
 {
     [Authorize]
     [ApiController]

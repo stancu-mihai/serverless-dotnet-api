@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Main\ServerlessDotnetApi.csproj" />
+    <ProjectReference Include="..\Main\Main.csproj" />
   </ItemGroup>
 
 </Project>

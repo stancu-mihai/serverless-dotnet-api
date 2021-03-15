@@ -3,10 +3,10 @@ using Xunit;
 using Moq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using ServerlessDotnetApi.Persistence;
-using ServerlessDotnetApi.Controllers;
+using Main.Persistence;
+using Main.Controllers;
 
-namespace ServerlessDotnetApi.Tests
+namespace Main.Tests
 {
     public class UsersControllerTests
     {

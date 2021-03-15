@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "ServerlessDotnetApi": {
+    "Main": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,

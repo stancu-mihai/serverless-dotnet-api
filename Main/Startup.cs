@@ -13,13 +13,13 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Amazon.DynamoDBv2;
 using System.Text.Json;
-using ServerlessDotnetApi.Persistence;
-using ServerlessDotnetApi.Helpers;
+using Main.Persistence;
+using Main.Helpers;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
-namespace ServerlessDotnetApi
+namespace Main
 {
     public class Startup
     {
@@ -38,7 +38,7 @@ namespace ServerlessDotnetApi
             services.AddAWSService<IAmazonDynamoDB>(Configuration.GetAWSOptions("Dynamodb"));
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ServerlessDotnetApi", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Main", Version = "v1" });
             });
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
@@ -89,7 +89,7 @@ namespace ServerlessDotnetApi
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ServerlessDotnetApi v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Main v1"));
             }
 
             app.UseHttpsRedirection();

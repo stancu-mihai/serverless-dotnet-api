@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ServerlessDotnetApi.Persistence
+namespace Main.Persistence
 {
     public interface IProductReviewRepository
     {

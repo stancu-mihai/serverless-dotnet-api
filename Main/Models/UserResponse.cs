@@ -1,7 +1,7 @@
 using System;
-using ServerlessDotnetApi.Persistence;
+using Main.Persistence;
 
-namespace ServerlessDotnetApi.Models
+namespace Main.Models
 {
     public class UserResponse
     {

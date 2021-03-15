@@ -94,6 +94,7 @@ Make sure ```Bearer token``` is selected in ```Authorization```. Copy + paste th
 - Query parameters (?q=search&a=15)
 - Logging
 - User - should replace username with user id
+- Secret- Env
 
 ## Decisions
 - JWT Should contain just user id, because it is the only one not changing (otherwise the token may contain a deleted user and would still work for 7 days)
