@@ -27,7 +27,8 @@
             },
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
-                "ASPNETCORE_URLS": "https://localhost:5001"
+                "ASPNETCORE_URLS": "https://localhost:5001",
+                "JWT_SECRET": "Some JWT secret for token generation (at least 16chars)"
             },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
@@ -60,7 +61,8 @@
             },
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
-                "ASPNETCORE_URLS": "https://localhost:6001"
+                "ASPNETCORE_URLS": "https://localhost:6001",
+                "JWT_SECRET": "Some JWT secret for token generation (at least 16chars)"
             },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"

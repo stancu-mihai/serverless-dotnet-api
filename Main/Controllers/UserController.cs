@@ -9,7 +9,6 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Main.Persistence;
 using Main.Models;
-using Main.Helpers;
 using System.Threading.Tasks;
 
 namespace Main.Controllers
@@ -20,12 +19,10 @@ namespace Main.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
-        private readonly AppSettings _appSettings;
 
-        public UsersController(IUserRepository userRepository, IOptions<AppSettings> appSettings)
+        public UsersController(IUserRepository userRepository)
         {
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-            _appSettings = appSettings.Value;
         }
 
         [AllowAnonymous]
@@ -47,7 +44,7 @@ namespace Main.Controllers
                 return BadRequest(new { message = "Username or password is incorrect" });
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var key = Encoding.ASCII.GetBytes(System.Environment.GetEnvironmentVariable("JWT_SECRET"));
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]

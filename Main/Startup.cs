@@ -14,7 +14,6 @@ using Microsoft.OpenApi.Models;
 using Amazon.DynamoDBv2;
 using System.Text.Json;
 using Main.Persistence;
-using Main.Helpers;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -40,11 +39,7 @@ namespace Main
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Main", Version = "v1" });
             });
-            var appSettingsSection = Configuration.GetSection("AppSettings");
-            services.Configure<AppSettings>(appSettingsSection);
-            // configure jwt authentication
-            var appSettings = appSettingsSection.Get<AppSettings>();
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            var key = Encoding.ASCII.GetBytes(System.Environment.GetEnvironmentVariable("JWT_SECRET"));
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

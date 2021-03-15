@@ -84,7 +84,6 @@ Make sure ```Bearer token``` is selected in ```Authorization```. Copy + paste th
 
 ## Todo:
 - Use granular dynamodb permissions in serverless.yml file, instead of dynamodb.*
-- Remove services, leave just controller and repository
 - Federated authentification
 - Validate REST data (schema)
 - Confirmation email
