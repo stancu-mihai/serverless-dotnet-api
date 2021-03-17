@@ -239,7 +239,7 @@ namespace Main.Controllers
 
             // only allow admins to delete other user records
             if (username != User.Identity.Name && 
-                Role.Admin != await GetUserRole(username))
+                Role.Admin != await GetUserRole(tokenUser.Username))
                 return Forbid();
 
             // delete user 
