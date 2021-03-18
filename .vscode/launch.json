@@ -2,44 +2,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": ".NET Core Launch (web-api)",
+            "name": "Run app",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "buildapi",            
-            "program": "${workspaceFolder}/Main/bin/Debug/netcoreapp3.1/Main.dll",
-            "args": [],
-            "cwd": "${workspaceRoot}",
-            "stopAtEntry": false,
-            "internalConsoleOptions": "openOnSessionStart",
-            "launchBrowser": {
-                "enabled": false,
-                "args": "${auto-detect-url}",
-                "windows": {
-                    "command": "cmd.exe",
-                    "args": "/C start ${auto-detect-url}/swagger"
-                },
-                "osx": {
-                    "command": "open"
-                },
-                "linux": {
-                    "command": "xdg-open"
-                }
-            },
-            "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development",
-                "ASPNETCORE_URLS": "https://localhost:5001",
-                "JWT_SECRET": "Some JWT secret for token generation (at least 16chars)"
-            },
-            "sourceFileMap": {
-                "/Views": "${workspaceFolder}/Views"
-            }
-        },
-
-        {
-            "name": ".NET Core Launch (web)",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "buildweb",            
+            "preLaunchTask": "build",            
             "program": "${workspaceFolder}/Main/bin/Debug/netcoreapp3.1/Main.dll",
             "args": [],
             "cwd": "${workspaceRoot}",
@@ -67,12 +33,6 @@
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
             }
-        },
-        {
-            "name": ".NET Core Attach",
-            "type": "coreclr",
-            "request": "attach",
-            "processId": "${command:pickProcess}"
-        },
+        }
     ]
 }

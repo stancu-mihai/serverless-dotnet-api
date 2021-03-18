@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "cleanweb",
+            "label": "clean",
             "command": "dotnet",
             "type": "process",
             "args": [
@@ -12,7 +12,7 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "buildweb",
+            "label": "build",
             "command": "dotnet",
             "type": "process",
             "args": [
@@ -20,28 +20,7 @@
                 "${workspaceFolder}/ServerlessDotnetApi.sln"
             ],
             "problemMatcher": "$msCompile",
-            "dependsOn":["cleanweb"]
-        },
-        {
-            "label": "cleanapi",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "clean",
-                "${workspaceFolder}/ServerlessDotnetApi.sln"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "buildapi",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "build",
-                "${workspaceFolder}/ServerlessDotnetApi.sln"
-            ],
-            "problemMatcher": "$msCompile",
-            "dependsOn":["cleanapi"]
+            "dependsOn":["clean"]
         }
     ]
 }
