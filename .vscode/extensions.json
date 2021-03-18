@@ -1,0 +1,8 @@
+{
+    "recommendations": [
+        "formulahendry.dotnet-test-explorer",
+        "ms-dotnettools.csharp",
+        "shd101wyy.markdown-preview-enhanced",
+        "ms-vscode.powershell"
+    ]
+}
