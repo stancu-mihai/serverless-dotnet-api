@@ -11,7 +11,6 @@ Starter for REST API project:
 - [ ] Should have 100% unit test coverage
 - [ ] Should allow logging
 - [ ] Should allow query parameters (?year=2015&product_name=test)
-- [ ] Entity framework
 - [ ] Schema validation
 
 ## Prerequisites:
@@ -87,16 +86,14 @@ Make sure ```Bearer token``` is selected in ```Authorization```. Copy + paste th
 - Federated authentification
 - Validate REST data (schema)
 - Confirmation email
-- Unit tests
-- Repository is tightly coupled with DynamoDBContext. Database migrations also can't currently be handled. Take a look into Entity Framework Core, and its support for DynamoDB?
+- Repository is tightly coupled with DynamoDBContext. 
 - Lock icon for authorization requiring services
-- Query parameters (?q=search&a=15)
-- Logging
 - User - should replace username with user id
-- Secret- Env
+
 
 ## Decisions
 - JWT Should contain just user id, because it is the only one not changing (otherwise the token may contain a deleted user and would still work for 7 days)
+- Will not use Entity Framework for NoSql Databases (ORM-Object relational mapping, relational means SQL)
 
 ## Questions
 - Admin and User in the same db?

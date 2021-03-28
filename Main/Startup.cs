@@ -34,7 +34,13 @@ namespace Main
         {
             services.AddControllers()
                 .AddJsonOptions(x => { x.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase; });
-            services.AddAWSService<IAmazonDynamoDB>(Configuration.GetAWSOptions("Dynamodb"));
+            services.AddSingleton<IAmazonDynamoDB>(sp =>
+            {
+                return new AmazonDynamoDBClient(new AmazonDynamoDBConfig { 
+                    ServiceURL = System.Environment.GetEnvironmentVariable("SERVICE_URL")
+                });
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Main", Version = "v1" });

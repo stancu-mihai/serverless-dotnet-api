@@ -26,6 +26,7 @@ provider:
     PRODUCT_REVIEW_DYNAMODB_TABLE: ${self:custom.productReviewTableName}
     USER_DYNAMODB_TABLE: ${self:custom.userTableName}
     JWT_SECRET: "Some JWT secret for token generation (at least 16chars)"
+    SERVICE_URL: https://dynamodb.us-east-1.amazonaws.com
     
   iamRoleStatements:
     - Effect: Allow
