@@ -3,6 +3,7 @@
         "formulahendry.dotnet-test-explorer",
         "ms-dotnettools.csharp",
         "shd101wyy.markdown-preview-enhanced",
-        "ms-vscode.powershell"
+        "ms-vscode.powershell",
+        "ms-azuretools.vscode-docker"
     ]
 }

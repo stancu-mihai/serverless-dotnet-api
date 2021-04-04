@@ -17,33 +17,29 @@ Starter for REST API project:
 - Node.js (required to install Serverless framework)
 - AWS CLI (run ```aws configure```)
 - Serverless framework ```npm install serverless -g```
-- Java JDK with JAVA_HOME system env set to C:\Program Files\Java\jdk-X.Y.Z (for running dynamodb locally)
+- Docker (for running dynamodb locally)
 - .NET 5
 - C# Extension for VSCode (MSBuild required for building - might require Visual Studio)
 
 ## How to run:
 ### For offline testing:
-- ```npm install``` (required for local dynamodb)
-- ```sls dynamodb install``` (required for local dynamodb)
-- ```sls dynamodb start``` (then visit http://localhost:8000/shell)
-- ```cd .dynamodb```
-- ```java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb```
+- ```docker-compose up``` (required for local dynamodb, tables must be manually created)
+- Run VSCode task (which depends on a build step)
 - Open a new terminal to run the next command(s):
 - If table already exists, delete it: ```aws dynamodb delete-table --table-name ProductReview --endpoint-url http://localhost:8000```
 - ```aws dynamodb create-table --cli-input-json file://DbScripts/create-table-productreview.json --endpoint-url http://localhost:8000```
 - ```aws dynamodb create-table --cli-input-json file://DbScripts/create-table-user.json --endpoint-url http://localhost:8000```
 - ```aws dynamodb list-tables --endpoint-url http://localhost:8000```
 - ```aws dynamodb scan --table-name User --endpoint-url http://localhost:8000```
-- ```aws dynamodb put-item --table-name User --item file://DbScripts/admin-user.json --endpoint-url http://localhost:8000``` Adds admin (admin/pass)
+- Use register path to post a new user, then modify its role from ```http://localhost:8001/``` web interface, or use ```aws dynamodb put-item --table-name User --item file://DbScripts/admin-user.json --endpoint-url http://localhost:8000``` to add (admin/pass) credentials
 - ```dotnet tool install --global Amazon.Lambda.Tools --version 3.0.1``` Required to package the lambda function into zip.
 - run ```.\build.ps1``` every time the code changes
 Two options:
-- use ```.NET Core Launch (web-api)``` task in VSCode, then use Postman for testing. 
+- use ```Run app``` task in VSCode, then use Postman for testing. 
 
-Base path should be ```https://localhost:5001```, so test something like ```https://localhost:5001/WeatherForecast```.
+Base path should be ```https://localhost:6001```, so test something like ```https://localhost:6001/WeatherForecast```.
 
     Note: SSL certificate check must be disabled in Postman, otherwise this won't work.
-- use ```.NET Core Launch (web)``` task in VSCode, which will open ```https://localhost:6001/swagger``` in browser
 ### For online testing:
 - ```.\build.ps1```
 - ```serverless deploy -v```
