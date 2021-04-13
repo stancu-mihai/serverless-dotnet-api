@@ -58,7 +58,7 @@ namespace Main
                     OnTokenValidated = context =>
                     {
                         var userRepo = context.HttpContext.RequestServices.GetRequiredService<IUserRepository>();
-                        var user = userRepo.GetByUsername(context.Principal.Identity.Name);
+                        var user = userRepo.GetByID(context.Principal.Identity.Name); 
                         if (user == null)
                         {
                             // return unauthorized if user no longer exists

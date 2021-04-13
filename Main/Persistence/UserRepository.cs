@@ -22,9 +22,9 @@ namespace Main.Persistence
         {
             return await _context.ScanAsync<UserItem>(new List<ScanCondition>()).GetRemainingAsync();
         }
-        public async Task<UserItem> GetByUsername(string username)
+        public async Task<UserItem> GetByID(string guid)
         {
-            return await _context.LoadAsync<UserItem>(username);
+            return await _context.LoadAsync<UserItem>(guid);
         }
         public async Task<UserItem> Create(UserItem user)
         {

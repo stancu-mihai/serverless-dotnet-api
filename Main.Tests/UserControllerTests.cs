@@ -17,7 +17,7 @@ namespace Main.Tests
         {
             // When checking if the user exists already, return null (doesn't exist)
             var mockRepository = new Mock<IUserRepository>();
-            mockRepository.Setup(x => x.GetByUsername("username"))
+            mockRepository.Setup(x => x.GetByID("username"))
                 .Returns(Task.FromResult<UserItem>(null));
 
             // When writing any UserItem to db, return this UserItem
@@ -51,7 +51,7 @@ namespace Main.Tests
         {
             // Arrange
             var mockRepository = new Mock<IUserRepository>();
-            mockRepository.Setup(x => x.GetByUsername("invalidUser"))
+            mockRepository.Setup(x => x.GetByID("invalidUser"))
                 .Returns(Task.FromResult<UserItem>(null));
 
             var controller = new UsersController(mockRepository.Object);
@@ -75,7 +75,7 @@ namespace Main.Tests
             byte[] passwordSalt = null;
             string password = "validPass";
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
-            mockRepository.Setup(x => x.GetByUsername("validUser"))
+            mockRepository.Setup(x => x.GetByID("validUser"))
                 .ReturnsAsync(new UserItem
                     {
                         Username = "validUser",
