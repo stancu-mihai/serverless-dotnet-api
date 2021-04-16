@@ -86,10 +86,10 @@ resources:
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:           # Only the hash key and the range key are defined. The rest is schemaless
-          - AttributeName: Username
+          - AttributeName: Id
             AttributeType: S            # Number, String, Binary or Boolean
         KeySchema:                      # Only the hash key and the range key are defined. The rest is schemaless
-          - AttributeName: Username
+          - AttributeName: Id
             KeyType: HASH               # Hash key - single attribute that uniquely identifies an item
         ProvisionedThroughput:
           ReadCapacityUnits: 1
