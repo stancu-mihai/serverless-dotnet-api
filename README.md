@@ -31,6 +31,8 @@ Starter for REST API project:
 - ```aws dynamodb create-table --cli-input-json file://DbScripts/create-table-user.json --endpoint-url http://localhost:8000```
 - ```aws dynamodb list-tables --endpoint-url http://localhost:8000```
 - ```aws dynamodb scan --table-name User --endpoint-url http://localhost:8000```
+- ```aws dynamodb update-item --table-name User --key '{"Id": {"S": '<GUID>'}}' --attribute-updates '{"Role": {"Value": {"N": '1'} --endpoint-url http://localhost:8000```
+- ```aws dynamodb delete-item --table-name User --key '{"Id": {"S": '<GUID>'}}' --endpoint-url http://localhost:8000```
 - Use register path to post a new user, then modify its role from ```http://localhost:8001/``` web interface, or use ```aws dynamodb put-item --table-name User --item file://DbScripts/admin-user.json --endpoint-url http://localhost:8000``` to add (admin/pass) credentials
 - ```dotnet tool install --global Amazon.Lambda.Tools --version 3.0.1``` Required to package the lambda function into zip.
 - run ```.\build.ps1``` every time the code changes
@@ -90,6 +92,8 @@ Make sure ```Bearer token``` is selected in ```Authorization```. Copy + paste th
 ## Decisions
 - JWT Should contain just user id, because it is the only one not changing (otherwise the token may contain a deleted user and would still work for 7 days)
 - Will not use Entity Framework for NoSql Databases (ORM-Object relational mapping, relational means SQL)
+- Will not create a global secondary index just for registration and authentification, due to the unnecessary cost overhead. Is better to just scan the entire table instead.
+- Tried out "aaronshaf/dynamodb-admin" Docker image and "dynamodb-admin" npm package by the same author, both had critical issues with modifying records in the interface. Decided to use plain old AWS CLI.
 
 ## Questions
 - Admin and User in the same db?
