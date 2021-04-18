@@ -58,14 +58,13 @@ namespace Main.Controllers
             var tokenString = tokenHandler.WriteToken(token);
 
             // return basic user info and authentication token
-            return Ok(new
-            {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Role = user.Role,
-                Token = tokenString,
-                Username = user.Username
-            });
+            UserLoginResponse ulr = new UserLoginResponse();
+            ulr.FirstName = user.FirstName;
+            ulr.LastName = user.LastName;
+            ulr.Role = user.Role;
+            ulr.Token = tokenString;
+            ulr.Username = user.Username;
+            return Ok(ulr);
         }
 
         [AllowAnonymous]

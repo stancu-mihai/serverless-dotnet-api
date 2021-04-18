@@ -82,16 +82,14 @@ namespace Main.Tests
             byte[] passwordSalt = null;
             string password = "validPass";
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
-            mockRepository.Setup(x => x.GetByUsername("validUser"))
-                .ReturnsAsync(new UserItem
-                    {
-                        Username = "validUser",
-                        FirstName = "validFirstName",
-                        LastName = "validLastName",
-                        Role = Role.User,
-                        PasswordHash = passwordHash,
-                        PasswordSalt = passwordSalt
-                    });
+            UserItem item = new UserItem();
+            item.Username = "validUser";
+            item.FirstName = "validFirstName";
+            item.LastName = "validLastName";
+            item.Role = Role.User;
+            item.PasswordHash = passwordHash;
+            item.PasswordSalt = passwordSalt;
+            mockRepository.Setup(x => x.GetByUsername("validUser")).ReturnsAsync(item);
 
             var controller = new UsersController(mockRepository.Object);
 
@@ -102,6 +100,12 @@ namespace Main.Tests
 
             IActionResult actionResult = await controller.Authenticate(request);
             Assert.IsType<OkObjectResult>(actionResult);
+            OkObjectResult okActionResult = actionResult as OkObjectResult;
+            UserLoginResponse ulr = okActionResult.Value as UserLoginResponse; 
+            Assert.Equal(ulr.FirstName, item.FirstName);
+            Assert.Equal(ulr.LastName, item.LastName);
+            Assert.Equal(ulr.Username, item.Username);
+            Assert.Equal(ulr.Role, item.Role);
         }
 
         // Helper methods
