@@ -93,14 +93,13 @@ namespace Main.Controllers
                 newUserItem.Role = Role.User; 
 
                 var item = await _userRepository.Create(newUserItem);
+                UserRegisterResponse urr = new UserRegisterResponse();
+                urr.FirstName = item.FirstName;
+                urr.LastName = item.LastName;
+                urr.Role = item.Role;
+                urr.Username = item.Username;
 
-                return Ok(new
-                {
-                    FirstName = item.FirstName,
-                    LastName = item.LastName,
-                    Role = item.Role,
-                    Username = item.Username
-                });
+                return Ok(urr);
             }
             catch (Exception ex)
             {

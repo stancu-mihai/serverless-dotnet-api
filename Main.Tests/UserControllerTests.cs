@@ -40,10 +40,17 @@ namespace Main.Tests
             request.Username =  "username";
             request.Password =  "password";
             request.FirstName = "firstName";
-            request.FirstName = "lastName";
+            request.LastName = "lastName";
 
             IActionResult actionResult = await controller.Register(request);
             Assert.IsType<OkObjectResult>(actionResult);
+            
+            OkObjectResult okActionResult = actionResult as OkObjectResult;
+            UserRegisterResponse urr = okActionResult.Value as UserRegisterResponse; 
+            Assert.Equal(urr.FirstName, newUserItem.FirstName);
+            Assert.Equal(urr.LastName, newUserItem.LastName);
+            Assert.Equal(urr.Username, newUserItem.Username);
+            Assert.Equal(urr.Role, newUserItem.Role);
         }
 
         [Fact]
