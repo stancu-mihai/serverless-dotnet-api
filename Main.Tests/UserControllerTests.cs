@@ -6,7 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Main.Persistence;
 using Main.Controllers;
 using Main.Models;
+using Microsoft.AspNetCore.Http;
 using System.Text;
+using System.Collections.Generic;
+using System.Security.Principal;
+using System.Security.Claims;
 
 namespace Main.Tests
 {
@@ -106,6 +110,59 @@ namespace Main.Tests
             Assert.Equal(ulr.LastName, item.LastName);
             Assert.Equal(ulr.Username, item.Username);
             Assert.Equal(ulr.Role, item.Role);
+        }
+
+        [Fact]
+        public async void GetAllRightCredentials()
+        {
+            // Arrange
+            var mockRepository = new Mock<IUserRepository>();
+            Environment.SetEnvironmentVariable("JWT_SECRET", "Some JWT secret for token generation (at least 16chars)");
+            byte[] passwordHash = null;
+            byte[] passwordSalt = null;
+            string password = "validPass";
+            CreatePasswordHash(password, out passwordHash, out passwordSalt);
+            UserItem userItem = new UserItem();
+            userItem.Username = "validUser";
+            userItem.FirstName = "validFirstName";
+            userItem.LastName = "validLastName";
+            userItem.Role = Role.User;
+            userItem.PasswordHash = passwordHash;
+            userItem.PasswordSalt = passwordSalt;
+
+            UserItem adminItem = new UserItem();
+            adminItem.Username = "validAdmin";
+            adminItem.FirstName = "validAdminFirstName";
+            adminItem.LastName = "validAdminLastName";
+            adminItem.Role = Role.Admin;
+            adminItem.PasswordHash = passwordHash;
+            adminItem.PasswordSalt = passwordSalt;
+            mockRepository.Setup(x => x.GetByUsername("validAdmin")).ReturnsAsync(adminItem);
+            mockRepository.Setup(y => y.GetAllAsync()).ReturnsAsync(new List<UserItem> { adminItem, userItem });
+
+            var user = new ClaimsPrincipal(
+                new ClaimsIdentity(new Claim[]{
+                    new Claim(ClaimTypes.Name, "validAdmin")
+                }));
+
+            var controller = new UsersController(mockRepository.Object);
+            controller.ControllerContext = new ControllerContext();     
+            controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
+
+            // Act
+            IActionResult actionResult = await controller.GetAll();
+            Assert.IsType<OkObjectResult>(actionResult);
+            OkObjectResult okActionResult = actionResult as OkObjectResult;
+            List<UserLoginResponse> ulrList = okActionResult.Value as List<UserLoginResponse>; 
+            var ulrArr = ulrList.ToArray();
+            Assert.Equal(ulrArr[0].FirstName, adminItem.FirstName);
+            Assert.Equal(ulrArr[0].LastName, adminItem.LastName);
+            Assert.Equal(ulrArr[0].Username, adminItem.Username);
+            Assert.Equal(ulrArr[0].Role, adminItem.Role);
+            Assert.Equal(ulrArr[1].FirstName, userItem.FirstName);
+            Assert.Equal(ulrArr[1].LastName, userItem.LastName);
+            Assert.Equal(ulrArr[1].Username, userItem.Username);
+            Assert.Equal(ulrArr[1].Role, userItem.Role);
         }
 
         // Helper methods

@@ -121,10 +121,10 @@ namespace Main.Controllers
 
             var users = await _userRepository.GetAllAsync();
 
-            List<UserResponse> result = new List<UserResponse>();
+            List<UserLoginResponse> result = new List<UserLoginResponse>();
             foreach(var user in users)
             {
-                var userResponse = new UserResponse
+                var userResponse = new UserLoginResponse
                 {
                     FirstName = user.FirstName,
                     LastName = user.LastName,
