@@ -165,6 +165,45 @@ namespace Main.Tests
             Assert.Equal(ulrArr[1].Role, userItem.Role);
         }
 
+        [Fact]
+        public async void GetByUsername()
+        {
+            // Arrange
+            var mockRepository = new Mock<IUserRepository>();
+            Environment.SetEnvironmentVariable("JWT_SECRET", "Some JWT secret for token generation (at least 16chars)");
+            byte[] passwordHash = null;
+            byte[] passwordSalt = null;
+            string password = "validPass";
+            CreatePasswordHash(password, out passwordHash, out passwordSalt);
+            UserItem userItem = new UserItem();
+            userItem.Username = "validUser";
+            userItem.FirstName = "validFirstName";
+            userItem.LastName = "validLastName";
+            userItem.Role = Role.User;
+            userItem.PasswordHash = passwordHash;
+            userItem.PasswordSalt = passwordSalt;
+            mockRepository.Setup(x => x.GetByUsername("validUser")).ReturnsAsync(userItem);
+
+            var user = new ClaimsPrincipal(
+                new ClaimsIdentity(new Claim[]{
+                    new Claim(ClaimTypes.Name, "validUser")
+                }));
+
+            var controller = new UsersController(mockRepository.Object);
+            controller.ControllerContext = new ControllerContext();     
+            controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
+
+            // Act
+            IActionResult actionResult = await controller.GetByUsername(userItem.Username);
+            Assert.IsType<OkObjectResult>(actionResult);
+            OkObjectResult okActionResult = actionResult as OkObjectResult;
+            UserLoginResponse ulr = okActionResult.Value as UserLoginResponse; 
+            Assert.Equal(ulr.FirstName, userItem.FirstName);
+            Assert.Equal(ulr.LastName, userItem.LastName);
+            Assert.Equal(ulr.Username, userItem.Username);
+            Assert.Equal(ulr.Role, userItem.Role);
+        }
+
         // Helper methods
         private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {

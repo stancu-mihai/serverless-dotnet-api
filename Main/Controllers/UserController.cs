@@ -124,8 +124,7 @@ namespace Main.Controllers
             List<UserLoginResponse> result = new List<UserLoginResponse>();
             foreach(var user in users)
             {
-                var userResponse = new UserLoginResponse
-                {
+                var userResponse = new UserLoginResponse {
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Username = user.Username,
@@ -157,7 +156,7 @@ namespace Main.Controllers
                 Role.Admin != await GetUserRole(User.Identity.Name ))
                 return Forbid();
 
-            return Ok(new{
+            return Ok(new UserLoginResponse{
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Username = user.Username,
