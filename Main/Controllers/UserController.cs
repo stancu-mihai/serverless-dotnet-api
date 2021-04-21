@@ -58,13 +58,13 @@ namespace Main.Controllers
             var tokenString = tokenHandler.WriteToken(token);
 
             // return basic user info and authentication token
-            UserLoginResponse ulr = new UserLoginResponse();
-            ulr.FirstName = user.FirstName;
-            ulr.LastName = user.LastName;
-            ulr.Role = user.Role;
-            ulr.Token = tokenString;
-            ulr.Username = user.Username;
-            return Ok(ulr);
+            return Ok( new UserLoginResponse {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Role = user.Role,
+                Token = tokenString,
+                Username = user.Username
+            });
         }
 
         [AllowAnonymous]
@@ -83,22 +83,21 @@ namespace Main.Controllers
                 byte[] passwordHash, passwordSalt;
                 CreatePasswordHash(userRequest.Password, out passwordHash, out passwordSalt);
 
-                var newUserItem = new UserItem();
-                newUserItem.FirstName =  userRequest.FirstName;
-                newUserItem.LastName =  userRequest.LastName;
-                newUserItem.Username =  userRequest.Username;
-                newUserItem.PasswordHash =  passwordHash;
-                newUserItem.PasswordSalt = passwordSalt;
-                newUserItem.Role = Role.User; 
+                var item = await _userRepository.Create(new UserItem(){
+                    FirstName =  userRequest.FirstName,
+                    LastName =  userRequest.LastName,
+                    Username =  userRequest.Username,
+                    PasswordHash =  passwordHash,
+                    PasswordSalt = passwordSalt,
+                    Role = Role.User
+                });
 
-                var item = await _userRepository.Create(newUserItem);
-                UserRegisterResponse urr = new UserRegisterResponse();
-                urr.FirstName = item.FirstName;
-                urr.LastName = item.LastName;
-                urr.Role = item.Role;
-                urr.Username = item.Username;
-
-                return Ok(urr);
+                return Ok(new UserRegisterResponse{
+                    FirstName = item.FirstName,
+                    LastName = item.LastName,
+                    Role = item.Role,
+                    Username = item.Username
+                });
             }
             catch (Exception ex)
             {
