@@ -8,7 +8,7 @@ Starter for REST API project:
 - [x] Should allow JWT authentification
 - [ ] Should allow federated authentification
 - [x] Should allow role-based authorization
-- [ ] Should have 100% unit test coverage
+- [x] Should measure test coverage
 - [ ] Should allow logging
 - [ ] Should allow query parameters (?year=2015&product_name=test)
 - [ ] Schema validation

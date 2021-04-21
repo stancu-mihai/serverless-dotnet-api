@@ -247,3 +247,6 @@ _Pvt_Extensions
 
 # Dynamodb local files
 .dynamodb
+
+# Code coverage
+.coverage
