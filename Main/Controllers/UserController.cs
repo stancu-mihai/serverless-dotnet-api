@@ -43,26 +43,12 @@ namespace Main.Controllers
             if (!VerifyPasswordHash(userRequest.Password, user.PasswordHash, user.PasswordSalt))
                 return BadRequest(new { message = "Username or password is incorrect" });
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(System.Environment.GetEnvironmentVariable("JWT_SECRET"));
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, user.Username.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
-
             // return basic user info and authentication token
             return Ok( new UserLoginResponse {
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Role = user.Role,
-                Token = tokenString,
+                Token = CreateToken(user),
                 Username = user.Username
             });
         }
@@ -96,6 +82,7 @@ namespace Main.Controllers
                     FirstName = item.FirstName,
                     LastName = item.LastName,
                     Role = item.Role,
+                    Token = CreateToken(item),
                     Username = item.Username
                 });
             }
@@ -280,6 +267,23 @@ namespace Main.Controllers
             }
 
             return true;
+        }
+
+        private static string CreateToken(UserItem user)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(System.Environment.GetEnvironmentVariable("JWT_SECRET"));
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, user.Username.ToString())
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
     }
 }
