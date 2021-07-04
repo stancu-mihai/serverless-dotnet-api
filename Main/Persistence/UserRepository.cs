@@ -22,9 +22,9 @@ namespace Main.Persistence
         {
             return await _context.ScanAsync<UserItem>(new List<ScanCondition>()).GetRemainingAsync();
         }
-        public async Task<UserItem> GetByUsername(string username)
+        public async Task<UserItem> GetByEmail(string email)
         {
-            return await _context.LoadAsync<UserItem>(username);
+            return await _context.LoadAsync<UserItem>(email);
         }
         public async Task<UserItem> Create(UserItem user)
         {
@@ -36,9 +36,9 @@ namespace Main.Persistence
             await _context.SaveAsync<UserItem>(userParam);
             return;
         }
-        public async Task Delete(string username)
+        public async Task Delete(string email)
         {
-            await _context.DeleteAsync<UserItem>(username);
+            await _context.DeleteAsync<UserItem>(email);
             return;
         }
     }

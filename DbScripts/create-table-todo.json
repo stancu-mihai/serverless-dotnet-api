@@ -1,10 +1,10 @@
 {
-    "TableName": "User",
+    "TableName": "Todo",
     "KeySchema": [
-      { "AttributeName": "Email", "KeyType": "HASH" }
+      { "AttributeName": "Id", "KeyType": "HASH" }
     ],
     "AttributeDefinitions": [
-      { "AttributeName": "Email", "AttributeType": "S" }
+      { "AttributeName": "Id", "AttributeType": "S" }
     ],
     "ProvisionedThroughput": {
       "ReadCapacityUnits": 5,

@@ -29,19 +29,19 @@ namespace Main.Controllers
         [HttpPost("auth/authenticate")]
         public async Task<IActionResult> Authenticate([FromBody]UserLoginRequest userRequest)
         {
-            if (string.IsNullOrEmpty(userRequest.Username) || 
+            if (string.IsNullOrEmpty(userRequest.Email) || 
                 string.IsNullOrEmpty(userRequest.Password))
                 throw new Exception("Username and password are required");
 
-            var user = await _userRepository.GetByUsername(userRequest.Username);
+            var user = await _userRepository.GetByEmail(userRequest.Email);
 
             // check if username exists
             if (user == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
+                return BadRequest(new { message = "Email or password is incorrect" });
 
             // check if password is correct
             if (!VerifyPasswordHash(userRequest.Password, user.PasswordHash, user.PasswordSalt))
-                return BadRequest(new { message = "Username or password is incorrect" });
+                return BadRequest(new { message = "Email or password is incorrect" });
 
             // return basic user info and authentication token
             return Ok( new UserLoginResponse {
@@ -49,7 +49,7 @@ namespace Main.Controllers
                 LastName = user.LastName,
                 Role = user.Role,
                 Token = CreateToken(user),
-                Username = user.Username
+                Email = user.Email
             });
         }
 
@@ -59,12 +59,12 @@ namespace Main.Controllers
         {
             try
             {
-                if (string.IsNullOrEmpty(userRequest.Username) || 
+                if (string.IsNullOrEmpty(userRequest.Email) || 
                     string.IsNullOrEmpty(userRequest.Password))
                     throw new Exception("Username and password are required");
 
-                if (null != await _userRepository.GetByUsername(userRequest.Username))
-                    throw new Exception("Username \"" + userRequest.Username + "\" is already taken");
+                if (null != await _userRepository.GetByEmail(userRequest.Email))
+                    throw new Exception("Username \"" + userRequest.Email + "\" is already taken");
 
                 byte[] passwordHash, passwordSalt;
                 CreatePasswordHash(userRequest.Password, out passwordHash, out passwordSalt);
@@ -72,7 +72,7 @@ namespace Main.Controllers
                 var item = await _userRepository.Create(new UserItem(){
                     FirstName =  userRequest.FirstName,
                     LastName =  userRequest.LastName,
-                    Username =  userRequest.Username,
+                    Email =  userRequest.Email,
                     PasswordHash =  passwordHash,
                     PasswordSalt = passwordSalt,
                     Role = Role.User
@@ -83,7 +83,7 @@ namespace Main.Controllers
                     LastName = item.LastName,
                     Role = item.Role,
                     Token = CreateToken(item),
-                    Username = item.Username
+                    Email = item.Email
                 });
             }
             catch (Exception ex)
@@ -97,7 +97,7 @@ namespace Main.Controllers
         public async Task<IActionResult> GetAll()
         {
             // Does the user in the token still exist in db?
-            var tokenUser =  await _userRepository.GetByUsername(User.Identity.Name); 
+            var tokenUser =  await _userRepository.GetByEmail(User.Identity.Name); 
             if (tokenUser == null)
                 return NotFound();
 
@@ -113,7 +113,7 @@ namespace Main.Controllers
                 var userResponse = new UserLoginResponse {
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    Username = user.Username,
+                    Email = user.Email,
                     Role = user.Role
                 };
                 result.Add(userResponse);
@@ -122,60 +122,60 @@ namespace Main.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{username}")]
-        public async Task<IActionResult> GetByUsername(string username)
+        [HttpGet("{email}")]
+        public async Task<IActionResult> GetByEmail(string email)
         {
             // Does the user in the token still exist in db?
-            var tokenUser =  await _userRepository.GetByUsername(User.Identity.Name);
+            var tokenUser =  await _userRepository.GetByEmail(User.Identity.Name);
 
             if (tokenUser == null)
                 return NotFound();
             
             // Is the requested user in the db?
-            var user = await _userRepository.GetByUsername(username);
+            var user = await _userRepository.GetByEmail(email);
 
             if (user == null)
                 return NotFound();
 
             // only allow admins to access other user records
-            if (username != User.Identity.Name && 
+            if (email != User.Identity.Name && 
                 Role.Admin != await GetUserRole(User.Identity.Name ))
                 return Forbid();
 
             return Ok(new UserLoginResponse{
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Username = user.Username,
+                Email = user.Email,
                 Role = user.Role
             });
         }
 
-        [HttpPut("{username}")]
+        [HttpPut("{email}")]
         public async Task<IActionResult> Update([FromBody]UserRegisterRequest userRequest)
         {
             try
             {
                 // Does the user in the token still exist in db?
-                var tokenUser =  await _userRepository.GetByUsername(User.Identity.Name);
+                var tokenUser =  await _userRepository.GetByEmail(User.Identity.Name);
                 if (tokenUser == null)
                     return NotFound();
 
                 // only allow admins to update other user records
-                if (userRequest.Username != User.Identity.Name && 
+                if (userRequest.Email != User.Identity.Name && 
                     Role.Admin != await GetUserRole(User.Identity.Name))
                     return Forbid();
 
-                // update username if it has changed
-                if (!string.IsNullOrWhiteSpace(userRequest.Username) &&
-                     userRequest.Username != User.Identity.Name)
+                // update email if it has changed
+                if (!string.IsNullOrWhiteSpace(userRequest.Email) &&
+                     userRequest.Email != User.Identity.Name)
                 {
-                    // throw error if the new username is already taken
-                    if (null != await _userRepository.GetByUsername(userRequest.Username))
-                        throw new Exception("Username " + userRequest.Username + " is already taken");
+                    // throw error if the new email is already taken
+                    if (null != await _userRepository.GetByEmail(userRequest.Email))
+                        throw new Exception("Email " + userRequest.Email + " is already taken");
 
-                    if(Role.Admin == await GetUserRole(userRequest.Username))
-                        throw new Exception("Only admins can modify username"); // Avoid normal user trying to become admin by renaming himself
-                    tokenUser.Username = userRequest.Username;
+                    if(Role.Admin == await GetUserRole(userRequest.Email))
+                        throw new Exception("Only admins can modify email"); // Avoid normal user trying to become admin by renaming himself
+                    tokenUser.Email = userRequest.Email;
                 }
 
                 // update user properties if provided
@@ -207,33 +207,33 @@ namespace Main.Controllers
             }
         }
 
-        [HttpDelete("{username}")]
-        public async Task<IActionResult> Delete(string username)
+        [HttpDelete("{email}")]
+        public async Task<IActionResult> Delete(string email)
         {
             // Does the user in the token still exist in db?
-            var tokenUser =  await _userRepository.GetByUsername(User.Identity.Name);
+            var tokenUser =  await _userRepository.GetByEmail(User.Identity.Name);
             if (tokenUser == null)
                 return NotFound();
             
             // Is the requested user in the db?
-            var reqUser =  await _userRepository.GetByUsername(username);
+            var reqUser =  await _userRepository.GetByEmail(email);
             if (reqUser == null)
                 return NotFound();
 
             // only allow admins to delete other user records
-            if (username != User.Identity.Name && 
-                Role.Admin != await GetUserRole(tokenUser.Username))
+            if (email != User.Identity.Name && 
+                Role.Admin != await GetUserRole(tokenUser.Email))
                 return Forbid();
 
             // delete user 
-            await _userRepository.Delete(username);
+            await _userRepository.Delete(email);
             return Ok();
         }
 
         // private helper methods
-        private async Task<Role> GetUserRole(string username)
+        private async Task<Role> GetUserRole(string email)
         {
-            var user =  await _userRepository.GetByUsername(username);
+            var user =  await _userRepository.GetByEmail(email);
             if (user == null)
                 throw new Exception("User not found");
                 
@@ -277,7 +277,7 @@ namespace Main.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Username.ToString())
+                    new Claim(ClaimTypes.Name, user.Email.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

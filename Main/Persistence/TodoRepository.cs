@@ -9,34 +9,34 @@ using Amazon.Lambda.Serialization.Json;
 [assembly: Amazon.Lambda.Core.LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
 namespace Main.Persistence
 {
-    public class ProductReviewRepository : IProductReviewRepository
+    public class TodoRepository : ITodoRepository
     {
         private readonly DynamoDBContext _context;
 
-        public ProductReviewRepository(IAmazonDynamoDB dynamoDbClient)
+        public TodoRepository(IAmazonDynamoDB dynamoDbClient)
         {
             if (dynamoDbClient == null) throw new ArgumentNullException(nameof(dynamoDbClient));
             _context = new DynamoDBContext(dynamoDbClient);
         }
 
-        public async Task AddAsync(ProductReviewItem reviewItem)
+        public async Task AddAsync(TodoItem reviewItem)
         {
             await _context.SaveAsync(reviewItem);
         }
 
-        public async Task<IEnumerable<ProductReviewItem>> GetAllAsync()
+        public async Task<IEnumerable<TodoItem>> GetAllAsync()
         {
-            return await _context.ScanAsync<ProductReviewItem>(new List<ScanCondition>()).GetRemainingAsync();
+            return await _context.ScanAsync<TodoItem>(new List<ScanCondition>()).GetRemainingAsync();
         }
 
-        public async Task<IEnumerable<ProductReviewItem>> GetUserReviewsAsync(int userId)
+        public async Task<IEnumerable<TodoItem>> GetUserReviewsAsync(int userId)
         {
-            return await _context.QueryAsync<ProductReviewItem>(userId).GetRemainingAsync();
+            return await _context.QueryAsync<TodoItem>(userId).GetRemainingAsync();
         }
 
-        public async Task<ProductReviewItem> GetReviewAsync(int userId, string productName)
+        public async Task<TodoItem> GetReviewAsync(int userId, string productName)
         {
-            return await _context.LoadAsync<ProductReviewItem>(userId, productName);
+            return await _context.LoadAsync<TodoItem>(userId, productName);
         }
     }
 }

@@ -5,7 +5,7 @@ frameworkVersion: ">2.1.0"
 plugins:
   - serverless-dynamodb-local
 custom:
-  productReviewTableName: ProductReview
+  todoTableName: Todo
   userTableName: User
 
   dynamodb:
@@ -23,7 +23,7 @@ provider:
   runtime: dotnetcore3.1
   region: us-east-1
   environment:
-    PRODUCT_REVIEW_DYNAMODB_TABLE: ${self:custom.productReviewTableName}
+    PRODUCT_REVIEW_DYNAMODB_TABLE: ${self:custom.todoTableName}
     USER_DYNAMODB_TABLE: ${self:custom.userTableName}
     JWT_SECRET: "Some JWT secret for token generation (at least 16chars)"
     SERVICE_URL: https://dynamodb.us-east-1.amazonaws.com
@@ -63,20 +63,16 @@ functions:
 
 resources:
   Resources:
-    ProductReviewTableName:
+    TodoTableName:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:           # Only the hash key and the range key are defined. The rest is schemaless
-          - AttributeName: UserId
-            AttributeType: N            # Number, String, Binary or Boolean
-          - AttributeName: ProductName
+          - AttributeName: Id
             AttributeType: S            # Number, String, Binary or Boolean
         KeySchema:                      # Only the hash key and the range key are defined. The rest is schemaless
-          - AttributeName: UserId
+          - AttributeName: Id
             KeyType: HASH               # Hash key - single attribute that uniquely identifies an item
-          - AttributeName: ProductName
-            KeyType: RANGE              # Hash and Range Key consists of two attributes that together, uniquely identify an item.
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
@@ -86,10 +82,10 @@ resources:
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:           # Only the hash key and the range key are defined. The rest is schemaless
-          - AttributeName: Username
+          - AttributeName: Email
             AttributeType: S            # Number, String, Binary or Boolean
         KeySchema:                      # Only the hash key and the range key are defined. The rest is schemaless
-          - AttributeName: Username
+          - AttributeName: Email
             KeyType: HASH               # Hash key - single attribute that uniquely identifies an item
         ProvisionedThroughput:
           ReadCapacityUnits: 1

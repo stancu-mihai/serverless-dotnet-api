@@ -9,7 +9,7 @@ namespace Main.Persistence
     {
         [DynamoDBHashKey] // Having a hash key is mandatory
         //[DynamoDBRangeKey] Having a range key is optional
-        public string Username { get; set; }
+        public string Email { get; set; }
         //[DynamoDBProperty(AttributeName = "name")] Having a property is optional in .net3, used only when the table field name differs from member
         public string FirstName { get; set; }
         public string LastName { get; set; }

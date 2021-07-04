@@ -5,10 +5,10 @@ namespace Main.Persistence
 {
     public interface IUserRepository
     {
-        Task<UserItem> GetByUsername(string username);
+        Task<UserItem> GetByEmail(string email);
         Task<IEnumerable<UserItem>> GetAllAsync();
         Task<UserItem> Create(UserItem user);
         Task Update(UserItem userParam);
-        Task Delete(string username);
+        Task Delete(string email);
     }
 }

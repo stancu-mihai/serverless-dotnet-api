@@ -21,14 +21,14 @@ namespace Main.Tests
         {
             // When checking if the user exists already, return null (doesn't exist)
             var mockRepository = new Mock<IUserRepository>();
-            mockRepository.Setup(x => x.GetByUsername("username"))
+            mockRepository.Setup(x => x.GetByEmail("email"))
                 .Returns(Task.FromResult<UserItem>(null));
 
             // When writing any UserItem to db, return this UserItem
             var newUserItem = new UserItem();
             newUserItem.FirstName = "firstName";
             newUserItem.LastName = "lastName";
-            newUserItem.Username = "username";
+            newUserItem.Email = "email";
             newUserItem.Role = Role.User; 
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash("password", out passwordHash, out passwordSalt);
@@ -41,7 +41,7 @@ namespace Main.Tests
 
             // Act
             UserRegisterRequest request = new UserRegisterRequest();
-            request.Username =  "username";
+            request.Email =  "email";
             request.Password =  "password";
             request.FirstName = "firstName";
             request.LastName = "lastName";
@@ -53,7 +53,7 @@ namespace Main.Tests
             UserRegisterResponse urr = okActionResult.Value as UserRegisterResponse; 
             Assert.Equal(urr.FirstName, newUserItem.FirstName);
             Assert.Equal(urr.LastName, newUserItem.LastName);
-            Assert.Equal(urr.Username, newUserItem.Username);
+            Assert.Equal(urr.Email, newUserItem.Email);
             Assert.Equal(urr.Role, newUserItem.Role);
         }
 
@@ -62,14 +62,14 @@ namespace Main.Tests
         {
             // Arrange
             var mockRepository = new Mock<IUserRepository>();
-            mockRepository.Setup(x => x.GetByUsername("invalidUser"))
+            mockRepository.Setup(x => x.GetByEmail("invalidUserEmail"))
                 .Returns(Task.FromResult<UserItem>(null));
 
             var controller = new UsersController(mockRepository.Object);
 
             // Act
             UserLoginRequest request = new UserLoginRequest();
-            request.Username =  "invalidUser";
+            request.Email =  "invalidUser";
             request.Password =  "invalidPass";
 
             IActionResult actionResult = await controller.Authenticate(request);
@@ -87,19 +87,19 @@ namespace Main.Tests
             string password = "validPass";
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
             UserItem item = new UserItem();
-            item.Username = "validUser";
+            item.Email = "validEmail";
             item.FirstName = "validFirstName";
             item.LastName = "validLastName";
             item.Role = Role.User;
             item.PasswordHash = passwordHash;
             item.PasswordSalt = passwordSalt;
-            mockRepository.Setup(x => x.GetByUsername("validUser")).ReturnsAsync(item);
+            mockRepository.Setup(x => x.GetByEmail("validUserEmail")).ReturnsAsync(item);
 
             var controller = new UsersController(mockRepository.Object);
 
             // Act
             UserLoginRequest request = new UserLoginRequest();
-            request.Username =  "validUser";
+            request.Email =  "validEmail";
             request.Password =  password;
 
             IActionResult actionResult = await controller.Authenticate(request);
@@ -108,7 +108,7 @@ namespace Main.Tests
             UserLoginResponse ulr = okActionResult.Value as UserLoginResponse; 
             Assert.Equal(ulr.FirstName, item.FirstName);
             Assert.Equal(ulr.LastName, item.LastName);
-            Assert.Equal(ulr.Username, item.Username);
+            Assert.Equal(ulr.Email, item.Email);
             Assert.Equal(ulr.Role, item.Role);
         }
 
@@ -123,7 +123,7 @@ namespace Main.Tests
             string password = "validPass";
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
             UserItem userItem = new UserItem();
-            userItem.Username = "validUser";
+            userItem.Email = "validUserEmail";
             userItem.FirstName = "validFirstName";
             userItem.LastName = "validLastName";
             userItem.Role = Role.User;
@@ -131,18 +131,18 @@ namespace Main.Tests
             userItem.PasswordSalt = passwordSalt;
 
             UserItem adminItem = new UserItem();
-            adminItem.Username = "validAdmin";
+            adminItem.Email = "validAdminEmail";
             adminItem.FirstName = "validAdminFirstName";
             adminItem.LastName = "validAdminLastName";
             adminItem.Role = Role.Admin;
             adminItem.PasswordHash = passwordHash;
             adminItem.PasswordSalt = passwordSalt;
-            mockRepository.Setup(x => x.GetByUsername("validAdmin")).ReturnsAsync(adminItem);
+            mockRepository.Setup(x => x.GetByEmail("validAdminEmail")).ReturnsAsync(adminItem);
             mockRepository.Setup(y => y.GetAllAsync()).ReturnsAsync(new List<UserItem> { adminItem, userItem });
 
             var user = new ClaimsPrincipal(
                 new ClaimsIdentity(new Claim[]{
-                    new Claim(ClaimTypes.Name, "validAdmin")
+                    new Claim(ClaimTypes.Name, "validAdminEmail")
                 }));
 
             var controller = new UsersController(mockRepository.Object);
@@ -157,11 +157,11 @@ namespace Main.Tests
             var ulrArr = ulrList.ToArray();
             Assert.Equal(ulrArr[0].FirstName, adminItem.FirstName);
             Assert.Equal(ulrArr[0].LastName, adminItem.LastName);
-            Assert.Equal(ulrArr[0].Username, adminItem.Username);
+            Assert.Equal(ulrArr[0].Email, adminItem.Email);
             Assert.Equal(ulrArr[0].Role, adminItem.Role);
             Assert.Equal(ulrArr[1].FirstName, userItem.FirstName);
             Assert.Equal(ulrArr[1].LastName, userItem.LastName);
-            Assert.Equal(ulrArr[1].Username, userItem.Username);
+            Assert.Equal(ulrArr[1].Email, userItem.Email);
             Assert.Equal(ulrArr[1].Role, userItem.Role);
         }
 
@@ -176,17 +176,17 @@ namespace Main.Tests
             string password = "validPass";
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
             UserItem userItem = new UserItem();
-            userItem.Username = "validUser";
+            userItem.Email = "validUserEmail";
             userItem.FirstName = "validFirstName";
             userItem.LastName = "validLastName";
             userItem.Role = Role.User;
             userItem.PasswordHash = passwordHash;
             userItem.PasswordSalt = passwordSalt;
-            mockRepository.Setup(x => x.GetByUsername("validUser")).ReturnsAsync(userItem);
+            mockRepository.Setup(x => x.GetByEmail("validUserEmail")).ReturnsAsync(userItem);
 
             var user = new ClaimsPrincipal(
                 new ClaimsIdentity(new Claim[]{
-                    new Claim(ClaimTypes.Name, "validUser")
+                    new Claim(ClaimTypes.Name, "validUserEmail")
                 }));
 
             var controller = new UsersController(mockRepository.Object);
@@ -194,13 +194,13 @@ namespace Main.Tests
             controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
             // Act
-            IActionResult actionResult = await controller.GetByUsername(userItem.Username);
+            IActionResult actionResult = await controller.GetByEmail(userItem.Email);
             Assert.IsType<OkObjectResult>(actionResult);
             OkObjectResult okActionResult = actionResult as OkObjectResult;
             UserLoginResponse ulr = okActionResult.Value as UserLoginResponse; 
             Assert.Equal(ulr.FirstName, userItem.FirstName);
             Assert.Equal(ulr.LastName, userItem.LastName);
-            Assert.Equal(ulr.Username, userItem.Username);
+            Assert.Equal(ulr.Email, userItem.Email);
             Assert.Equal(ulr.Role, userItem.Role);
         }
 

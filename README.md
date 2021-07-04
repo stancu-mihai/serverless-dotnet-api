@@ -26,14 +26,14 @@ Starter for REST API project:
 - ```docker-compose up``` (required for local dynamodb, tables must be manually created)
 - Run VSCode task (which depends on a build step)
 - Open a new terminal to run the next command(s):
-- If table already exists, delete it: ```aws dynamodb delete-table --table-name ProductReview --endpoint-url http://localhost:8000```
-- ```aws dynamodb create-table --cli-input-json file://DbScripts/create-table-productreview.json --endpoint-url http://localhost:8000```
+- If table already exists, delete it: ```aws dynamodb delete-table --table-name Todo --endpoint-url http://localhost:8000```
+- ```aws dynamodb create-table --cli-input-json file://DbScripts/create-table-todo.json --endpoint-url http://localhost:8000```
 - ```aws dynamodb create-table --cli-input-json file://DbScripts/create-table-user.json --endpoint-url http://localhost:8000```
 - ```aws dynamodb list-tables --endpoint-url http://localhost:8000```
 - ```aws dynamodb scan --table-name User --endpoint-url http://localhost:8000```
 - ```aws dynamodb update-item --table-name User --key '{"Id": {"S": '<GUID>'}}' --attribute-updates '{"Role": {"Value": {"N": '1'} --endpoint-url http://localhost:8000```
 - ```aws dynamodb delete-item --table-name User --key '{"Id": {"S": '<GUID>'}}' --endpoint-url http://localhost:8000```
-- Use register path to post a new user, then modify its role from ```http://localhost:8001/``` web interface, or use ```aws dynamodb put-item --table-name User --item file://DbScripts/admin-user.json --endpoint-url http://localhost:8000``` to add (admin/pass) credentials
+- Use register path to post a new user, then modify its role from ```http://localhost:8001/``` web interface, or use ```aws dynamodb put-item --table-name User --item file://DbScripts/admin-user.json --endpoint-url http://localhost:8000``` to add (admin@here.com/pass) credentials
 - ```dotnet tool install --global Amazon.Lambda.Tools --version 3.0.1``` Required to package the lambda function into zip.
 - run ```.\build.ps1``` every time the code changes
 Two options:
@@ -52,7 +52,7 @@ Base path should be ```https://localhost:6001```, so test something like ```http
 {
   "firstName": "fn",
   "lastName": "ln",
-  "username": "user",
+  "email": "user@mail.com",
   "password": "pass"
 }
 ```
@@ -64,7 +64,7 @@ Base path should be ```https://localhost:6001```, so test something like ```http
 - POST to ```https://localhost:6001/Users/auth/authenticate``` the following message as Body/raw:
 ```json
 {
-  "username": "user",
+  "email": "user@mail.com",
   "password": "pass"
 }
 ```
@@ -138,7 +138,7 @@ or
 ```json
 {
   "body": "{\"productName\":\"test1\",\"rank\":99,\"review\":\"test2\",\"reviewOn\":\"2021-02-25T21:20:38.633Z\"}",
-  "path": "/productreviews/15",
+  "path": "/todos/15",
   "httpMethod": "POST",
   "headers": {
     "Accept": "application/json",
